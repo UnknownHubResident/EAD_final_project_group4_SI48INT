@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,15 +27,19 @@ class RegisterController extends Controller
 
         $intendedRole = $validated['intended_role'];
 
+        // Default values: everyone starts as a student
+        $assignedRole = 'student'; 
+        
+        // --- LOGIC TO DETERMINE APPROVAL STATUS ---
         if ($intendedRole === 'scholar_provider') {
-            $assignedRole = 'student';    
+            // A Provider is NOT approved yet, hence false.
+            $isApproved = false; 
             $message = 'Registration successful! Your request to be a Provider is pending Admin approval.';
         } 
         
         else {
-            
-            $assignedRole = 'student';
-            $isApproved = true;            
+            // A Student is automatically approved, hence true.
+            $isApproved = true;
             $message = 'Registration is successful!';
         }
 
@@ -43,16 +47,12 @@ class RegisterController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => '$assignedRole',
-            'is_approved' => $isApproved,
-            
+            // FIX 2: Removed single quotes to use the variable value
+            'role' => $assignedRole, 
+            // FIX 1: This variable is now guaranteed to be set in the logic above
+            'is_approved' => $isApproved, 
         ]);
 
         return redirect('/login')->with('success', $message);
     }
-
 }
-
-
-
-
