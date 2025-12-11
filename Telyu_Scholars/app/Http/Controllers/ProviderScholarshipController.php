@@ -22,12 +22,19 @@ class ProviderScholarshipController extends Controller
 
     public function index()
     {
-        // GET THE CORRECT VIEW PATH
-        $viewPath = $this->getViewPath(); 
         
-        // You might add logic here later to filter scholarships by the user's ID
-        // For now, it fetches all:
-        $scholarships = Scholarship::latest()->paginate(10);
+        $viewPath = $this->getViewPath(); 
+        $user = Auth::user();
+
+        $query = Scholarship::latest();
+
+        if ($user->role === 'scholar_provider')
+        {
+            $query->where('user_id', $user->id);
+        }
+        
+       
+        $scholarships = $query->paginate(10);
         
         // DYNAMICALLY LOAD THE VIEW (e.g., 'admin.scholarships.index' or 'provider.scholarships.index')
         return view("{$viewPath}.scholarships.index", compact('scholarships'));
@@ -47,6 +54,8 @@ class ProviderScholarshipController extends Controller
         // ... (Store logic remains the same) ...
         $data = $request->validated();
 
+        $data['user_id'] = Auth::id();
+
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('scholarships', 'public');
         }
@@ -54,13 +63,20 @@ class ProviderScholarshipController extends Controller
         Scholarship::create($data);
 
         // Redirect uses the route name, which is correct
-        return redirect()->route('provider.scholarships.index') 
+        $routePrefix = Auth::user()->role === 'admin' ? 'admin' : 'provider';
+        return redirect()->route("{$routePrefix}.scholarships.index") 
             ->with('success', 'Scholarship created successfully.');
     }
 
     public function edit(Scholarship $scholarship)
     {
         // GET THE CORRECT VIEW PATH
+        if (Auth::user()->role !== 'admin') {
+        if ($scholarship->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
         $viewPath = $this->getViewPath();
         
         // DYNAMICALLY LOAD THE VIEW
@@ -69,23 +85,49 @@ class ProviderScholarshipController extends Controller
 
     public function update(UpdateScholarshipRequest $request, Scholarship $scholarship)
     {
-        // ... (Update logic remains the same) ...
+        if (Auth::user()->role !== 'admin') {
+        if ($scholarship->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+        
         $data = $request->validated();
 
-        if ($request->hasFile('image')) {
-            if ($scholarship->image) {
-                Storage::disk('public')->delete($scholarship->image);
-            }
-            $data['image'] = $request->file('image')->store('scholarships', 'public');
+    // 1. Handle NEW image upload
+    if ($request->hasFile('image')) {
+        // Delete old image file
+        if ($scholarship->image) {
+            Storage::disk('public')->delete($scholarship->image);
         }
+        // Store new image file and save the path to $data
+        $data['image'] = $request->file('image')->store('scholarships', 'public');
+    }
+    
+    // 2. Handle EXPLICIT DELETION without replacement (NEW LOGIC)
+    // Checks if the 'delete_image' box was checked AND the scholarship currently has an image
+    elseif ($request->filled('delete_image') && $scholarship->image) {
+        // Delete the file from storage
+        Storage::disk('public')->delete($scholarship->image);
+        // Set the image column to NULL in the database
+        $data['image'] = NULL;
+    }
+    // 3. If no file uploaded and no deletion requested, the image key is omitted, 
+    // and the original image path remains in the database.
 
-        $scholarship->update($data);
+    $scholarship->update($data);
 
-        return redirect()->route('provider.scholarships.index')->with('success', 'Scholarship updated.');
+    $routePrefix = Auth::user()->role === 'admin' ? 'admin' : 'provider';
+    return redirect()->route("{$routePrefix}.scholarships.index")->with('success', 'Scholarship updated.');
     }
 
     public function destroy(Scholarship $scholarship)
-    {
+    {   
+        if (Auth::user()->role !== 'admin') {
+        if ($scholarship->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
         // ... (Destroy logic remains the same) ...
         if ($scholarship->image) {
             Storage::disk('public')->delete($scholarship->image);
@@ -93,8 +135,9 @@ class ProviderScholarshipController extends Controller
 
         $scholarship->delete();
 
-        return redirect()->route('provider.scholarships.index')->with('success', 'Scholarship deleted.');
+        $routePrefix = Auth::user()->role === 'admin' ? 'admin' : 'provider';
+    return redirect()->route("{$routePrefix}.scholarships.index")->with('success', 'Scholarship deleted.');
     }
+}
 
     
-}

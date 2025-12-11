@@ -19,6 +19,7 @@
                 $table->date('deadline'); // Untuk deadline validation
                 $table->string('image')->nullable();
                 $table->boolean('is_active')->default(true);
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
                 $table->timestamps();   
                 
             });

@@ -9,14 +9,31 @@
 <body class="bg-gray-100 min-h-screen">
 <nav class="bg-red-700">
   <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center text-white">
-    <a href="{{ route('provider.scholarships.index') }}" class="text-xl font-bold">Admin Panel</a>
-    <div class="space-x-4">
-      <a href="{{ route('provider.scholarships.index') }}" class="text-sm">Manage Scholarships</a>
-      <form method="POST" action="{{ route('logout') }}" class="inline">
-          @csrf
-          <button class="text-sm">Logout</button>
-      </form>
+    <a href="{{ route('dashboard') }}" class="text-xl font-bold">Admin Panel</a>
+    <div class="relative inline-block text-left">
+    <button type="button" class="inline-flex justify-center w-full rounded-md px-3 py-1 text-sm font-medium text-white hover:bg-red-600 focus:outline-none" id="admin-menu-button" aria-expanded="true" aria-haspopup="true" onclick="document.getElementById('admin-menu').classList.toggle('hidden')">
+        Admin Tasks
+        <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+    </button>
+
+    <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-50" role="menu" aria-orientation="vertical" aria-labelledby="admin-menu-button" tabindex="-1" id="admin-menu">
+        <div class="py-1" role="none">
+            <a href="{{ route('dashboard') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Dashboard</a>
+            <a href="{{ route('admin.scholarships.index') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Manage Scholarships</a>
+            <a href="{{ route('admin.users.index') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Manage Users</a>
+            <a href="{{ route('admin.pending') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Pending Providers</a>
+            
+            <form method="POST" action="{{ route('logout') }}" role="none">
+                @csrf
+                <button type="submit" class="text-gray-700 w-full text-left block px-4 py-2 text-sm hover:bg-red-100" role="menuitem" tabindex="-1">
+                    Logout
+                </button>
+            </form>
+        </div>
     </div>
+</div>
   </div>
 </nav>
 

@@ -29,15 +29,20 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
 
-            $request->session()->regenerate();
+            $user = Auth::user();
 
-            return redirect()->intended('/dashboard');
+           
+
+        $request->session()->regenerate();
+
+        return redirect()->intended('/dashboard');
+
+
         }
 
         return back()->withErrors([
-            'email' => 'you may enter the wrong email or password!'
+            'email' => 'you may enter the wrng email or password!'
         ]);
-
 
 }
 

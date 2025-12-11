@@ -12,7 +12,7 @@
     <ul class="list-disc ml-6">
         <li><a href="{{ route('admin.pending') }}" class="text-blue-600 hover:underline">View Pending Provider Applications</a></li>
         <li><a href="{{ route('admin.scholarships.index')}}" class="text-blue-600 hover:underline">Manage All Scholarships</a></li>
-        <li><a href="{{ route('admin.users') }}" class="text-blue-600 hover:underline">Manage All Users</a></li>
+        <li><a href="{{ route('admin.users.index') }}" class="text-blue-600 hover:underline">Manage All Users</a></li>
         <li>System Configuration (Placeholder)</li>
     </ul>
 

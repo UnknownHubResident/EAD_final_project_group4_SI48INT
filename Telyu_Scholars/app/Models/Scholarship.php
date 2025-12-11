@@ -13,11 +13,17 @@ class Scholarship extends Model
         'amount',
         'deadline',
         'image',
-        'is_active'
+        'is_active',
+        'user_id'
     ];
 
     protected $casts = [
         'deadline' => 'date',
         'is_active' => 'boolean'
     ];
+
+    public function provider() 
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

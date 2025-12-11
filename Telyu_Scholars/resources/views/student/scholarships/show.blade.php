@@ -9,7 +9,7 @@
 
     <div class="p-6">
       <h1 class="text-3xl font-bold">{{ $scholarship->title }}</h1>
-      <p class="text-gray-600 mt-2">Provider: {{ $scholarship->provider ?? '—' }}</p>
+      <p class="text-gray-600 mt-2">Provider: {{ $scholarship->provider->name ?? 'N/A' }}</p>
       <p class="text-red-600 mt-1">Deadline: {{ $scholarship->deadline->format('d M Y') }}</p>
 
       <div class="mt-6 prose">
