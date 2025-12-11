@@ -1,16 +1,12 @@
-<?php
+    <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+    use Illuminate\Database\Migrations\Migration;
+    use Illuminate\Database\Schema\Blueprint;
+    use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    return new class extends Migration
     {
+
         Schema::table('users', function (Blueprint $table) {
             // Role definition
             $table->enum('role',['admin','student','scholar_provider'])->default('student')->after('email');
@@ -31,3 +27,4 @@ return new class extends Migration
         });
     }
 };
+
