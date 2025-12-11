@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreScholarshipRequest extends FormRequest
+class UpdateScholarshipRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -12,9 +12,13 @@ class StoreScholarshipRequest extends FormRequest
     }
 
     public function rules(): array
-    {
+    {   
+        $scholarship = $this->route('scholarship');
+
+        $scholarshipid = $scholarship ? $scholarship->id : null;
+
         return [
-            'title' => 'required|string|max:255|unique:scholarships,title',
+            'title' => 'required|string|max:255|unique:scholarships,title,' . $scholarshipid,
             'provider' => 'nullable|string|max:255',
             'description' => 'required|string',
             'amount' => 'required|numeric|min:0',

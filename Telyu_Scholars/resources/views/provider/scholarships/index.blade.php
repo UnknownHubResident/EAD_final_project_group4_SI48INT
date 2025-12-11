@@ -1,4 +1,4 @@
-@extends('layouts.student')
+@extends('layouts.provider')
 
 @section('content')
 <div>
@@ -25,7 +25,7 @@
           <p class="text-sm text-gray-600">{{ Str::limit($s->description, 120) }}</p>
           <div class="mt-3 flex justify-between items-center">
             <span class="text-sm text-red-600">Deadline: {{ $s->deadline->format('d M Y') }}</span>
-            <a href="{{ route('student.scholarships.show', $s) }}"
+            <a href="{{ route('provider.scholarships.edit', $s) }}"
                class="px-3 py-1 bg-red-600 text-white rounded">View</a>
           </div>
         </div>

@@ -3,7 +3,7 @@
 @section('content')
 <div class="flex justify-between items-center mb-6">
   <h1 class="text-2xl font-bold">Manage Scholarships</h1>
-  <a href="{{ route('provider.scholarships.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded">Create</a>
+  <a href="{{ route('admin.scholarships.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded">Create</a>
 </div>
 
 <div class="bg-white shadow rounded">
@@ -31,9 +31,9 @@
         <td class="p-3">{{ $s->deadline->format('d M Y') }}</td>
         <td class="p-3">{{ $s->is_active ? 'Active' : 'Inactive' }}</td>
         <td class="p-3 space-x-2">
-          <a href="{{ route('provider.scholarships.edit', $s) }}" class="px-3 py-1 bg-yellow-500 text-white rounded">Edit</a>
+          <a href="{{ route('admin.scholarships.edit', $s) }}" class="px-3 py-1 bg-yellow-500 text-white rounded">Edit</a>
 
-          <form action="{{ route('provider.scholarships.destroy', $s) }}" method="POST" class="inline">
+          <form action="{{ route('admin.scholarships.destroy', $s) }}" method="POST" class="inline">
             @csrf
             @method('DELETE')
             <button class="px-3 py-1 bg-red-600 text-white rounded" onclick="return confirm('Delete?')">Delete</button>
