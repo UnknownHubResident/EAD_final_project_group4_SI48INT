@@ -26,7 +26,7 @@ class RoleMiddleware
             }
 
             // Normal UI request → redirect with message
-            return redirect()->route('home')
+            return redirect()->route('dashboard')
                 ->with('error', 'You are not authorized to access this page.');
         }
 

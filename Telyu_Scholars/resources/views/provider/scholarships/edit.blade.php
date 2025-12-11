@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.provider')
 
 @section('content')
 <div class="max-w-3xl mx-auto py-10">
 
     <h1 class="text-2xl font-bold mb-6">Edit Scholarship</h1>
 
-    <form action="{{ route('scholarships.update', $scholarship) }}" method="POST"
+    <form action="{{ route('provider.scholarships.update', $scholarship) }}" method="POST"
           class="bg-white p-6 rounded-lg shadow">
         @csrf
         @method('PUT')

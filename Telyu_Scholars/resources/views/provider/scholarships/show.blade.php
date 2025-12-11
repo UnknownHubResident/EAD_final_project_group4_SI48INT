@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.provider')
 
 @section('content')
 <div class="max-w-4xl mx-auto py-10">
@@ -17,7 +17,7 @@
             </span>
         </p>
 
-        <a href="{{ route('scholarships.edit', $scholarship) }}"
+        <a href="{{ route('provider.scholarships.edit', $scholarship) }}"
            class="mt-4 inline-block px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg">
             Edit
         </a>

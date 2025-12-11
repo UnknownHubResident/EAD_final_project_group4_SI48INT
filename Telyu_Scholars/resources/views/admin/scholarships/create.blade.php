@@ -3,7 +3,7 @@
 @section('content')
 <h1 class="text-2xl font-bold mb-4">Create Scholarship</h1>
 
-<form action="{{ route('provider.scholarships.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow">
+<form action="{{ route('admin.scholarships.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow">
   @csrf
 
   <div class="mb-4">

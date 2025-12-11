@@ -13,7 +13,7 @@
         <hr>
         <h3>Student Menu</h3>
         <ul>
-            <li>View Available Scholarships</li>
+            <li><a href =" {{ route('student.scholarships.index')}}">View Available Scholarships</a></li>
             <li>Submit an Application</li>
             <li>Update Profile</li>
         </ul>
