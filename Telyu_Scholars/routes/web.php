@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController; 
 use App\Http\Controllers\Auth\RegisterController; 
 use App\Http\Middleware\AdminMiddleware; 
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\StudentScholarshipController; 
 use App\Http\Controllers\ProviderScholarshipController; 
 use Illuminate\Support\Facades\Auth; 
@@ -66,17 +67,19 @@ Route::middleware(['auth'])->group(function () {
         ->group(function () {
             
             Route::post('/approve/{user}', [AdminController::class, 'approveProvider'])->name('approve'); 
+           
+
             Route::get('/pending', [AdminController::class, 'showPendingProviders'])->name('pending'); 
 
             // ADDED: Admin's dedicated Scholarship Management
             Route::resource('scholarships', ProviderScholarshipController::class) // <-- Admin's separate path
                 ->except(['show']);
 
-            // USER MANAGEMENT ROUTES (from previous steps)
-            Route::get('/users', [AdminController::class, 'manageUsers'])->name('users');
-            Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
-            Route::patch('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
-            Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.destroy');
-            Route::patch('/users/{user}/toggle', [AdminController::class, 'toggleActiveStatus'])->name('users.toggle');
-        });
+         Route::controller(AdminUserController::class)->prefix('users')->name('users.')->group(function () {
+         Route::get('/', 'index')->name('index'); // Lists all users
+         Route::get('/{user}', 'show')->name('show'); // ⬅️ Required for Provider details (Requirement 3)
+         Route::put('/{user}/toggle-status', 'toggleStatus')->name('toggleStatus'); // Deactivate/Reactivate
+         Route::delete('/{user}', 'destroy')->name('destroy'); // Delete
+        });       
+    });
 });

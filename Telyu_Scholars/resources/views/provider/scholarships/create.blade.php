@@ -6,6 +6,7 @@
     <h1 class="text-2xl font-bold mb-6">Create Scholarship</h1>
 
     <form action="{{ route('provider.scholarships.store') }}" method="POST"
+        enctype="multipart/form-data"
         class="bg-white p-6 rounded-lg shadow">
         @csrf
 
@@ -41,6 +42,15 @@
             <input type="date" name="deadline"
                    class="w-full mt-1 p-3 border rounded-lg focus:ring focus:ring-blue-200">
             @error('deadline')
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div class="mb-4">
+            <label for="image" class="font-semibold">Image</label>
+            <input type="file" name="image" id="image"
+                class="w-full mt-1 p-3 border rounded-lg focus:ring focus:ring-blue-200">
+            @error('image')
                 <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>

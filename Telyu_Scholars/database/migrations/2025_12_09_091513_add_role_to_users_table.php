@@ -6,13 +6,16 @@
 
     return new class extends Migration
     {
+        public function up(): void 
+        {
 
         Schema::table('users', function (Blueprint $table) {
             // Role definition
             $table->enum('role',['admin','student','scholar_provider'])->default('student')->after('email');
             
-            // FIX: Moved 'is_approved' definition INSIDE the closure
+           
             $table->boolean('is_approved')->default(true)->after('role'); 
+
         });
     }
 

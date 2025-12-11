@@ -38,6 +38,12 @@
     <label class="font-semibold">Image (optional)</label>
     @if($scholarship->image)
       <div class="mb-2"><img src="{{ asset('storage/'.$scholarship->image) }}" class="h-20 rounded"></div>
+      <div class="mb-2">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="delete_image" value="1" class="form-checkbox text-red-600">
+                    <span class="ml-2 text-red-600 font-semibold">Check to delete current image</span>
+                </label>
+            </div>
     @endif
     <input type="file" name="image" accept="image/*" class="w-full">
   </div>
