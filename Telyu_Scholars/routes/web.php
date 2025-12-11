@@ -55,6 +55,32 @@ Route::middleware(['auth'])->group(function () {
         // Middleware is applied by the group
         Route::get('/pending', [AdminController::class, 'showPendingProviders'])
             ->name('pending'); // FIX: Name is now just 'pending' (resolved to 'admin.pending')
+
+        // Existing routes:
+        Route::post('/approve/{user}', [AdminController::class, 'approveProvider'])->name('approve'); 
+        Route::get('/pending', [AdminController::class, 'showPendingProviders'])->name('pending'); 
+
+        // --- NEW USER MANAGEMENT ROUTES ---
+
+        // 1. View all users (Index)
+        // URL: /admin/users | Name: admin.users
+        Route::get('/users', [AdminController::class, 'manageUsers'])->name('users');
+
+        // 2. View the Edit User form (Show/Edit)
+        // URL: /admin/users/{user}/edit | Name: admin.users.edit
+        Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+
+        // 3. Update the user details (Update)
+        // URL: /admin/users/{user} | Name: admin.users.update
+        Route::patch('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
+
+        // 4. Delete a user (Destroy)
+        // URL: /admin/users/{user} | Name: admin.users.destroy
+        Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.destroy');
+
+        // 5. Toggle account status (Activate/Deactivate)
+        // URL: /admin/users/{user}/toggle | Name: admin.users.toggle
+        Route::patch('/users/{user}/toggle', [AdminController::class, 'toggleActiveStatus'])->name('users.toggle'); 
         
     });
 });

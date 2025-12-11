@@ -22,7 +22,8 @@
     @endif
 
     <form method="POST" action="{{ url('/login') }}">
-        @csrf
+        @csrf 
+
         
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" value="{{ old('email') }}" required><br><br>

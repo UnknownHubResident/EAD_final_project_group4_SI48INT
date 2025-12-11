@@ -14,7 +14,7 @@
         <h3>Admin Tasks</h3>
         <ul>
             <li><a href="{{ route('admin.pending') }}">View Pending Provider Applications (PLACEHOLDER)</a></li>
-            <li>Manage All Users</li>
+            <li><a href="{{ route('admin.users')  }}" >Manage All Users (PLACEHOLDER)</a></li>
             <li>System Configuration</li>
         </ul>
 
