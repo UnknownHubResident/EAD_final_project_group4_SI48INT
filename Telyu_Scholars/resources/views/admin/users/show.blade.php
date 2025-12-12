@@ -26,12 +26,37 @@
         </div>
     </div>
 
-    {{-- Future development section for Provider's scholarships and actions --}}
-    <h2 class="text-2xl font-bold mt-8 mb-4">Scholarship Management</h2>
+   
+    <h2 class="text-2xl font-bold mt-8 mb-4">Scholarship Management ({{ $user->scholarships->count() }} Total)</h2>
 
-    <div class="p-6 bg-gray-50 border border-gray-200 rounded-lg">
-        <p class="text-gray-600">This section will display all scholarships posted by {{ $user->name }} and allow the Admin to view, edit, or delete them.</p>
-    </div>
+<div class="space-y-4">
+    @forelse ($user->scholarships as $scholarship)
+        <div class="flex justify-between items-center p-4 border border-gray-200 bg-white rounded-lg shadow">
+            <div>
+                <h3 class="text-lg font-semibold">{{ $scholarship->title }}</h3>
+                <p class="text-sm text-gray-600">Deadline: {{ $scholarship->deadline->format('M d, Y') }} | Amount: {{ number_format($scholarship->amount, 0) }}</p>
+                <p class="text-sm text-gray-600">Status: 
+                    <span class="px-2 py-0.5 text-xs rounded-full {{ $scholarship->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        {{ $scholarship->is_active ? 'Active' : 'Inactive' }}
+                    </span>
+                </p>
+            </div>
+            <div class="flex space-x-2">
+                {{-- Admin actions go here (e.g., View, Edit, Delete) --}}
+                <a href="{{ route('admin.scholarships.edit', $scholarship) }}" class="text-indigo-600 hover:text-indigo-900 font-medium">Edit</a>
+                <form method="POST" action="{{ route('admin.scholarships.destroy', $scholarship) }}" onsubmit="return confirm('Are you sure you want to delete this scholarship?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-red-600 hover:text-red-900 font-medium">Delete</button>
+                </form>
+            </div>
+        </div>
+    @empty
+        <div class="p-6 bg-yellow-50 border border-yellow-300 rounded-lg">
+            <p class="text-yellow-800">This provider has not posted any scholarships yet.</p>
+        </div>
+    @endforelse
+</div>
 
     <p class="mt-8">
         <a href="{{ route('admin.users.index') }}" class="text-blue-600 hover:underline">← Back to All Users</a>
