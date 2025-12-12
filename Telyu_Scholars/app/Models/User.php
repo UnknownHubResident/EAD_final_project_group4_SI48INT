@@ -24,6 +24,8 @@ class User extends Authenticatable
         'password',
         'role',
         'is_approved',
+        'is_rejected',
+        'rejection_reason',
     ];
 
     /**
@@ -47,6 +49,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_approved' => 'boolean',
+            'is_rejected' => 'boolean',
+            'rejection_reason' => 'string',
             
         ];
     }
