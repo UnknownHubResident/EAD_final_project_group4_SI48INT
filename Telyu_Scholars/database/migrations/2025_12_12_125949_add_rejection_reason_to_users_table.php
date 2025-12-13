@@ -12,12 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['admin', 'student', 'scholar_provider'])->default('student')->after('email');
-        $table->boolean('is_approved')->default(false)->after('role');
-        $table->boolean('is_rejected')->default(false)->after('is_approved');
-        $table->text('rejection_reason')->nullable()->after('is_rejected');
-    });
-        
+            $table->text('rejection_reason')->nullable()->after('is_rejected');
+        });
     }
 
     /**
@@ -26,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn(['rejection_reason', 'is_rejected', 'is_approved', 'role']);
-    });
+            $table->dropColumn('rejection_reason');
+        });
     }
-
 };
