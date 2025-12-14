@@ -56,6 +56,20 @@
   </div>
 
   <div class="mt-4">
+            <label class="block font-semibold mb-2">Eligible Majors</label>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                @foreach($majors as $major)
+                    <label class="flex items-center space-x-2 text-sm">
+                        <input type="checkbox"
+                               name="majors[]"
+                               value="{{ $major->id }}">
+                        <span>{{ $major->name }}</span>
+                    </label>
+                @endforeach
+    </div>
+
+  <div class="mt-4">
     <button class="px-4 py-2 bg-yellow-500 text-white rounded">Update</button>
   </div>
 </form>

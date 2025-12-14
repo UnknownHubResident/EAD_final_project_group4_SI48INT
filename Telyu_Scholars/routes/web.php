@@ -10,6 +10,8 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\StudentScholarshipController; 
 use App\Http\Controllers\ProviderScholarshipController; 
 use Illuminate\Support\Facades\Auth; 
+use App\Models\Major;       // <--- Jangan lupa import ini di paling atas
+use App\Models\Scholarship; // <--- Import ini juga
 
 
 // ======================================================================
@@ -71,13 +73,13 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/pending', [AdminController::class, 'showPendingProviders'])->name('pending'); 
 
-            // ADDED: Admin's dedicated Scholarship Management
+            
             Route::resource('scholarships', ProviderScholarshipController::class) // <-- Admin's separate path
                 ->except(['show']);
 
          Route::controller(AdminUserController::class)->prefix('users')->name('users.')->group(function () {
          Route::get('/', 'index')->name('index'); // Lists all users
-         Route::get('/{user}', 'show')->name('show'); // ⬅️ Required for Provider details (Requirement 3)
+         Route::get('/{user}', 'show')->name('show'); // Required for Provider details (Requirement 3)
          Route::put('/{user}/toggle-status', 'toggleStatus')->name('toggleStatus'); // Deactivate/Reactivate
          Route::delete('/{user}', 'destroy')->name('destroy'); // Delete
         });       

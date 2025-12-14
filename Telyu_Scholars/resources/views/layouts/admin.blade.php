@@ -1,49 +1,92 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <title>Admin | Scholarship</title>
-</head>
-<body class="bg-gray-100 min-h-screen">
-<nav class="bg-red-700">
-  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center text-white">
-    <a href="{{ route('dashboard') }}" class="text-xl font-bold">Admin Panel</a>
-    <div class="relative inline-block text-left">
-    <button type="button" class="inline-flex justify-center w-full rounded-md px-3 py-1 text-sm font-medium text-white hover:bg-red-600 focus:outline-none" id="admin-menu-button" aria-expanded="true" aria-haspopup="true" onclick="document.getElementById('admin-menu').classList.toggle('hidden')">
-        Admin Tasks
-        <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-        </svg>
-    </button>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-50" role="menu" aria-orientation="vertical" aria-labelledby="admin-menu-button" tabindex="-1" id="admin-menu">
-        <div class="py-1" role="none">
-            <a href="{{ route('dashboard') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Dashboard</a>
-            <a href="{{ route('admin.scholarships.index') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Manage Scholarships</a>
-            <a href="{{ route('admin.users.index') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Manage Users</a>
-            <a href="{{ route('admin.pending') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Pending Providers</a>
-            
-            <form method="POST" action="{{ route('logout') }}" role="none">
-                @csrf
-                <button type="submit" class="text-gray-700 w-full text-left block px-4 py-2 text-sm hover:bg-red-100" role="menuitem" tabindex="-1">
-                    Logout
-                </button>
-            </form>
+    <title>Admin | Scholarship</title>
+
+    {{-- Tailwind --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+{{-- ================= NAVBAR ================= --}}
+<nav class="bg-red-900 relative z-20">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center text-white">
+
+        <a href="{{ route('dashboard') }}" class="text-xl font-bold">
+            Admin Panel
+        </a>
+
+        <div class="relative">
+            <button
+                type="button"
+                onclick="document.getElementById('admin-menu').classList.toggle('hidden')"
+                class="inline-flex items-center px-4 py-2 text-sm font-medium hover:bg-red-700 rounded"
+            >
+                Admin Tasks
+                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            {{-- DROPDOWN --}}
+            <div
+                id="admin-menu"
+                class="hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-30 pointer-events-auto"
+            >
+                <a href="{{ route('dashboard') }}"
+                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Dashboard
+                </a>
+
+                <a href="{{ route('admin.scholarships.index') }}"
+                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Manage Scholarships
+                </a>
+
+                <a href="{{ route('admin.users.index') }}"
+                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Manage Users
+                </a>
+
+                <a href="{{ route('admin.pending') }}"
+                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Pending Providers
+                </a>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button
+                        type="submit"
+                        class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                    >
+                        Logout
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-  </div>
 </nav>
 
-<main class="py-6">
-  <div class="max-w-7xl mx-auto px-4">
-    @if(session('success'))
-      <div class="mb-4 p-3 bg-green-100 text-green-700 rounded">{{ session('success') }}</div>
-    @endif
-    @yield('content')
-  </div>
+{{-- ================= MAIN CONTENT ================= --}}
+<main class="relative z-0 py-8">
+    <div class="max-w-7xl mx-auto px-4">
+
+        @if(session('success'))
+            <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @yield('content')
+
+    </div>
 </main>
+
 </body>
 </html>

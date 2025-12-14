@@ -26,4 +26,10 @@ class Scholarship extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function majors()
+    {
+        return $this->belongsToMany(Major::class);
+    }
+
 }

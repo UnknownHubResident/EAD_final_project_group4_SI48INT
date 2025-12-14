@@ -32,5 +32,6 @@
             Logout
         </button>
     </form>
+
 </div>
 @endsection
