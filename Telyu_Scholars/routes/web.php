@@ -10,8 +10,8 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\StudentScholarshipController; 
 use App\Http\Controllers\ProviderScholarshipController; 
 use Illuminate\Support\Facades\Auth; 
-use App\Models\Major;       // <--- Jangan lupa import ini di paling atas
-use App\Models\Scholarship; // <--- Import ini juga
+use App\Models\Major;       
+use App\Models\Scholarship; 
 
 
 // ======================================================================

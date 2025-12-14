@@ -7,13 +7,24 @@ use Illuminate\Foundation\Configuration\Middleware;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        
+        // 1. Alias Middleware (yang sudah kamu buat)
         $middleware->alias([
-            'role' => App\Http\Middleware\RoleMiddleware::class,
-]);
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+        ]);
+
+        // 2. Disable CSRF untuk route tertentu (CARA LARAVEL 11)
+        $middleware->validateCsrfTokens(except: [
+            'login',
+            'register',
+            'provider/scholarships',      // Untuk store (POST)
+            'provider/scholarships/*',    // Untuk update/delete (PUT/DELETE)
+        ]);
 
     })
     ->withExceptions(function (Exceptions $exceptions): void {
