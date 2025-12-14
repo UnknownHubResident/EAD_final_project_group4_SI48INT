@@ -55,6 +55,17 @@
             @enderror
         </div>
 
+        <label class="block mb-2 font-medium">Eligible Majors</label>
+
+        <div class="grid grid-cols-2 gap-2 mb-4">
+        @foreach($majors as $major)
+            <label class="flex items-center gap-2">
+                <input type="checkbox" name="majors[]" value="{{ $major->id }}">
+                {{ $major->name }}
+            </label>
+        @endforeach
+        </div>
+        
         <button class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">
             Create
         </button>

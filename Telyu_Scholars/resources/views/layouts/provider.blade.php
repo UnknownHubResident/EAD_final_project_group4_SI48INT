@@ -7,7 +7,7 @@
   <title>external provider | Scholarship</title>
 </head>
 <body class="bg-gray-100 min-h-screen">
-<nav class="bg-green-700">
+<nav class="bg-red-900">
   <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center text-white">
    <a href="{{ route('dashboard') }}" class="text-xl font-bold">Provider Panel</a>
     <div class="relative inline-block text-left">

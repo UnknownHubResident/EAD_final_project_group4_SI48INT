@@ -10,6 +10,8 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\StudentScholarshipController; 
 use App\Http\Controllers\ProviderScholarshipController; 
 use Illuminate\Support\Facades\Auth; 
+use App\Models\Major;       
+use App\Models\Scholarship; 
 
 
 // ======================================================================
@@ -68,9 +70,6 @@ Route::middleware(['auth'])->group(function () {
             
             Route::post('/approve/{user}', [AdminController::class, 'approveProvider'])->name('approve'); 
            
-            Route::get('/providers/{user}/reject/form', [AdminController::class, 'showRejectForm'])->name('reject.form'); 
-            Route::post('/providers/{user}/reject', [AdminController::class, 'finalizeReject'])->name('reject.finalize');
-            Route::post('/providers/{user}/unreject', [AdminController::class, 'unrejectProvider'])->name('unreject');
 
             Route::get('/pending', [AdminController::class, 'showPendingProviders'])->name('pending'); 
 
@@ -80,11 +79,9 @@ Route::middleware(['auth'])->group(function () {
 
          Route::controller(AdminUserController::class)->prefix('users')->name('users.')->group(function () {
          Route::get('/', 'index')->name('index'); // Lists all users
-         Route::get('/{user}', 'show')->name('show'); //Required for Provider details (Requirement 3)
+         Route::get('/{user}', 'show')->name('show'); // Required for Provider details (Requirement 3)
          Route::put('/{user}/toggle-status', 'toggleStatus')->name('toggleStatus'); // Deactivate/Reactivate
          Route::delete('/{user}', 'destroy')->name('destroy'); // Delete
-
-         
         });       
     });
 });

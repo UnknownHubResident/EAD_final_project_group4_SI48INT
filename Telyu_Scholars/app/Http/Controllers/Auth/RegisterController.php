@@ -23,16 +23,12 @@ class RegisterController extends Controller
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'min:6', 'confirmed'],
             'intended_role' => ['required', Rule::in(['student', 'scholar_provider'])],
-            'student_number' => ['required_if:intended_role,student','nullable', 'string','min:12','max:12', 'unique:users,student_number'],
-            'study_major' => ['required_if:intended_role,student', 'nullable', 'string', 'max:255'],
-            'year_batch' => ['required_if:intended_role,student', 'nullable', 'string', 'digits:4' ],
-            'degree_rank' => ['required_if:intended_role,student', 'nullable', Rule::in(['Bachelor', 'Master', 'PhD'])],
         ]);
 
         $intendedRole = $validated['intended_role'];
 
         // Default values: everyone starts as a student
-        $assignedRole = $intendedRole; 
+        $assignedRole = 'student'; 
         
         // --- LOGIC TO DETERMINE APPROVAL STATUS ---
         if ($intendedRole === 'scholar_provider') {
@@ -51,15 +47,10 @@ class RegisterController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-
-            'student_number' => $validated['student_number'] ?? null,
-            'study_major' => $validated['study_major'] ?? null,
-            'degree_rank' => $validated['degree_rank'] ?? null,
-            'year_batch' => $validated['year_batch'] ?? null,
-            
+            // FIX 2: Removed single quotes to use the variable value
             'role' => $assignedRole, 
+            // FIX 1: This variable is now guaranteed to be set in the logic above
             'is_approved' => $isApproved, 
-            'is_rejected' => false,
         ]);
 
         return redirect('/login')->with('success', $message);
