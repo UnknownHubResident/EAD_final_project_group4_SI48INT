@@ -26,4 +26,26 @@ class ScholarshipApiController extends Controller
             'data' => $query->get()
         ]);
     }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'amount' => 'required|numeric',
+            'deadline' => 'required|date',
+            'quota' => 'required|integer',
+            'user_id' => 'required|exists:users,id'
+
+        ]);
+
+        $scholarship = Scholarship::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Scholarship created successfully',
+            'data' => $scholarship
+        ], 201);
+    }
+
 }
