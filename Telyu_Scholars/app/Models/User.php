@@ -21,17 +21,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'student_number',
-
-        'study_major',
-        'degree_rank',
-        'year_batch',
-        
         'password',
         'role',
         'is_approved',
-        'is_rejected',
-        'rejection_reason',
     ];
 
     /**
@@ -55,8 +47,6 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_approved' => 'boolean',
-            'is_rejected' => 'boolean',
-            'rejection_reason' => 'string',
             
         ];
     }

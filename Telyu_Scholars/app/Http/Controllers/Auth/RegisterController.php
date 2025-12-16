@@ -10,7 +10,6 @@ use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
-    
     public function ShowRegisFrom()
     {
         return view('auth.register');
@@ -30,19 +29,11 @@ class RegisterController extends Controller
         ]);
 
         $intendedRole = $validated['intended_role'];
-
-       
-        $assignedRole = $intendedRole; 
         
-        // apporval status checker
         if ($intendedRole === 'scholar_provider') {
-            
             $isApproved = false; 
             $message = 'Registration successful! Your request to be a Provider is pending Admin approval.';
-        } 
-        
-        else {
-            
+        } else {
             $isApproved = true;
             $message = 'Registration is successful!';
         }
@@ -51,13 +42,11 @@ class RegisterController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-
             'student_number' => $validated['student_number'] ?? null,
             'study_major' => $validated['study_major'] ?? null,
             'degree_rank' => $validated['degree_rank'] ?? null,
             'year_batch' => $validated['year_batch'] ?? null,
-            
-            'role' => $assignedRole, 
+            'role' => $intendedRole, 
             'is_approved' => $isApproved, 
             'is_rejected' => false,
         ]);

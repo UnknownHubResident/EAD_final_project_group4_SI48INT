@@ -4,40 +4,45 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Major;        
+use App\Models\Scholarship;  
 
-
-class DashBoardController extends Controller
+class DashboardController extends Controller
 {
-    
-    public function index(Request $request)
+    public function index()
     {
-
         $user = Auth::user();
 
-        // 1. Check if the user is rejected or pending
+        // 1. Guard Checks (Your Logic)
         if ($user->is_rejected) {
             return view('rejected-approval');
         } 
 
-        // 2. Check the pending status 
         if ($user->role === 'scholar_provider' && !$user->is_approved) {
             return view('pending-approval');
         }
 
-       // 3. Routing for approved users
-        if ($user->role === 'admin') {
-            return view('dashboard.admin');
-        } 
-        
-        if ($user->role === 'scholar_provider') {
-            return view('dashboard.scholar_provider');
-        }
-
+        // 2. Student Logic (Merged from Main)
         if ($user->role === 'student') {
-            
-            
-            return view('dashboard.student'); 
+            $majors = Major::all();
+            $scholarships = Scholarship::with('majors')
+                ->where('is_active', true)
+                ->latest()
+                ->paginate(9);
+
+            return view('dashboard.student', compact('majors', 'scholarships'));
         }
 
+        // 3. Provider Logic
+        if ($user->role === 'scholar_provider') {
+            return view('dashboard.scholar_provider'); 
+        }
+
+        // 4. Admin Logic
+        if ($user->role === 'admin') {
+            return view('dashboard.admin'); 
+        }
+
+        abort(403, 'Unauthorized action.');
     }
 }

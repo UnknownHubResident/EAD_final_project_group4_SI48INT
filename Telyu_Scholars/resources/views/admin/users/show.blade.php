@@ -37,6 +37,7 @@
         </div>
     </div>
 
+
     <h2 class="text-2xl font-bold text-gray-800 mb-4">Scholarships Posted ({{ $user->scholarships->count() }})</h2>
 
     <div class="grid gap-4">
@@ -61,4 +62,17 @@
         @endforelse
     </div>
 </div>
+
+    {{-- Future development section for Provider's scholarships and actions --}}
+    <h2 class="text-2xl font-bold mt-8 mb-4">Scholarship Management</h2>
+
+    <div class="p-6 bg-gray-50 border border-gray-200 rounded-lg">
+        <p class="text-gray-600">This section will display all scholarships posted by {{ $user->name }} and allow the Admin to view, edit, or delete them.</p>
+    </div>
+
+    <p class="mt-8">
+        <a href="{{ route('admin.users.index') }}" class="text-blue-600 hover:underline">← Back to All Users</a>
+    </p>
+
+
 @endsection
