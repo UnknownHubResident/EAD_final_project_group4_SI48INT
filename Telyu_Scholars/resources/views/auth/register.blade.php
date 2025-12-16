@@ -2,99 +2,118 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Tel-U Scholars</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Register an Account</h1>
-
-    @if (session('success'))
-        <p style="color: green;">{{ session('success') }}</p>
-    @endif
-
-    @if ($errors->any())
-        <div style="color: red;">
-            <h3>Please fix the following errors:</h3>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center py-12 px-4">
+    <div class="max-w-md w-full bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        <div class="bg-red-600 py-6 text-center">
+            <h1 class="text-2xl font-bold text-white uppercase tracking-wider">Create Account</h1>
         </div>
-    @endif
 
-    <form method="POST" action="{{ url('/register') }}">
-        @csrf
-        
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" value="{{ old('name') }}" required><br><br>
-
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" value="{{ old('email') }}" required><br><br>
-
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <label for="password_confirmation">Confirm Password:</label><br>
-        <input type="password" id="password_confirmation" name="password_confirmation" required><br><br>
-
-        <label for="intended_role">I want to register as a:</label><br>
-        <select name="intended_role" id="intended_role" onchange="toggleStudentFields()" required>
-            <option value="student" {{ old('intended_role', 'student') == 'student' ? 'selected' : '' }}>Student (Standard User)</option>
-            <option value="scholar_provider" {{ old('intended_role') == 'scholar_provider' ? 'selected' : '' }}>Scholar Provider (Requires Admin Approval)</option>
-        </select><br><br>
-
-        <div id="student_fields">
-            <h3>Student Academic Details (Required for Student Role)</h3>
+        <form method="POST" action="{{ url('/register') }}" class="p-8 space-y-5">
+            @csrf
             
-            <label for="student_number">Student Number (e.g., 12 digits):</label><br>
-            <input type="text" id="student_number" name="student_number" value="{{ old('student_number') }}" maxlength="12" required><br><br>
+            @if ($errors->any())
+                <div class="bg-red-50 p-4 border-l-4 border-red-500 text-red-700 text-sm mb-4">
+                    @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
 
-            <label for="study_major">Study Major:</label><br>
-            <input type="text" id="study_major" name="study_major" value="{{ old('study_major') }}" required><br><br>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+                <input type="text" name="name" value="{{ old('name') }}" required 
+                       class="w-full rounded-lg border-gray-300 focus:ring-red-500 focus:border-red-500 shadow-sm">
+            </div>
 
-            <label for="year_batch">Year Batch (e.g., 2024):</label><br>
-            <input type="text" id="year_batch" name="year_batch" value="{{ old('year_batch') }}" maxlength="4" required><br><br>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+                <input type="email" name="email" value="{{ old('email') }}" required 
+                       class="w-full rounded-lg border-gray-300 focus:ring-red-500 focus:border-red-500 shadow-sm">
+            </div>
 
-            <label for="degree_rank">Degree Rank:</label><br>
-            <select name="degree_rank" id="degree_rank" required>
-                <option value="">Select Degree</option>
-                <option value="Bachelor" {{ old('degree_rank') == 'Bachelor' ? 'selected' : '' }}>Bachelor</option>
-                <option value="Master" {{ old('degree_rank') == 'Master' ? 'selected' : '' }}>Master</option>
-                <option value="PhD" {{ old('degree_rank') == 'PhD' ? 'selected' : '' }}>Doctor of Philosophy (PhD)</option>
-            </select><br><br>
-        </div>
-        <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="{{ url('/login') }}">Login here</a>.</p>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" name="password" required 
+                           class="w-full rounded-lg border-gray-300 focus:ring-red-500 focus:border-red-500 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Confirm</label>
+                    <input type="password" name="password_confirmation" required 
+                           class="w-full rounded-lg border-gray-300 focus:ring-red-500 focus:border-red-500 shadow-sm">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Register as:</label>
+                <select name="intended_role" id="intended_role" onchange="toggleStudentFields()" required
+                        class="w-full rounded-lg border-gray-300 focus:ring-red-500 focus:border-red-500 shadow-sm bg-gray-50 font-medium">
+                    <option value="student">Student</option>
+                    <option value="scholar_provider">Scholar Provider</option>
+                </select>
+            </div>
+
+            <div id="student_fields" class="space-y-4 pt-4 border-t border-gray-100">
+                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest">Academic Details</h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Student Number</label>
+                        <input type="text" name="student_number" value="{{ old('student_number') }}" maxlength="12"
+                               class="w-full rounded-lg border-gray-300 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Year Batch</label>
+                        <input type="text" name="year_batch" value="{{ old('year_batch') }}" maxlength="4"
+                               class="w-full rounded-lg border-gray-300 text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Major</label>
+                    <input type="text" name="study_major" value="{{ old('study_major') }}"
+                           class="w-full rounded-lg border-gray-300 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Degree Rank</label>
+                    <select name="degree_rank" class="w-full rounded-lg border-gray-300 text-sm">
+                        <option value="Bachelor">Bachelor</option>
+                        <option value="Master">Master</option>
+                        <option value="PhD">PhD</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-700 shadow-md transition">
+                Register Account
+            </button>
+
+            <p class="text-center text-sm text-gray-600">
+                Already have an account? <a href="{{ url('/login') }}" class="text-red-600 font-bold hover:underline">Login here</a>.
+            </p>
+        </form>
+    </div>
 
     <script>
         function toggleStudentFields() {
-        const roleSelect = document.getElementById('intended_role');
-        const studentFieldsDiv = document.getElementById('student_fields');
-        
-        // Get all required fields within the student fields div
-        const studentFields = studentFieldsDiv.querySelectorAll('input[required], select[required]');
+            const role = document.getElementById('intended_role').value;
+            const container = document.getElementById('student_fields');
+            const inputs = container.querySelectorAll('input, select');
 
-        if (roleSelect.value === 'student') {
-            studentFieldsDiv.style.display = 'block';
-            
-            // 1. If Student, fields ARE required
-            studentFields.forEach(field => {
-                field.setAttribute('required', 'required');
-            });
-            
-        } else { // Role is 'scholar_provider'
-            studentFieldsDiv.style.display = 'none';
-            
-            // 2. If Provider, fields are NOT required (remove the attribute)
-            studentFields.forEach(field => {
-                field.removeAttribute('required');
-            });
+            if (role === 'student') {
+                container.classList.remove('hidden');
+                inputs.forEach(i => i.setAttribute('required', 'required'));
+            } else {
+                container.classList.add('hidden');
+                inputs.forEach(i => i.removeAttribute('required'));
+            }
         }
-    }
-    
-    // Run the function immediately when the page loads
-    document.addEventListener('DOMContentLoaded', toggleStudentFields);
+        document.addEventListener('DOMContentLoaded', toggleStudentFields);
     </script>
 </body>
 </html>

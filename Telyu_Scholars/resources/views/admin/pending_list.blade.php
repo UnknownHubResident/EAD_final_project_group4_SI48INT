@@ -26,7 +26,7 @@
 
                     {{-- 2. Reject (GET link to the rejection form, CORRECT) --}}
                     <a href="{{ route('admin.reject.form', $user) }}" class="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 font-bold transition duration-150 flex items-center">
-                        💀 Reject Provider
+                        ⛔ Reject Provider
                     </a>
                     
                 </div>

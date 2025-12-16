@@ -5,10 +5,33 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
 
 class LoginController extends Controller
 {
-    protected $redirectTo = '/dashboard';
+    
+    protected function redirectTo()
+    {
+        $user = Auth::user();
+        
+        // --- ROLE-BASED REDIRECT LOGIC ---
+        if ($user->role === 'admin') {
+            return route('dashboard');
+        }
+
+        if ($user->role === 'scholar_provider') {
+            return route('dashboard');
+        }
+
+     
+        if ($user->role === 'student') {
+            return route('dashboard'); 
+        }
+
+       
+        return RouteServiceProvider::HOME; 
+    }
+
 
     public function showLoginForm()
     {
@@ -35,7 +58,7 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended('/dashboard');
+        return redirect($this->redirectTo());
 
 
         }

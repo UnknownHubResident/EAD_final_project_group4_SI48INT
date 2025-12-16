@@ -47,16 +47,15 @@ class AdminController extends Controller
    
     public function finalizeReject(Request $request, User $user)
     {
-        // 1. Validate the input (reason is optional)
+       
         $validated = $request->validate([
             'rejection_reason' => ['nullable', 'string', 'max:500'],
         ]);
         
-        // 2. Perform the rejection/suspension
+        
         $user->update([
-            'is_approved' => false, // Must be false to be suspended
-            'is_rejected' => true,  // Mark as rejected/suspended
-            'rejection_reason' => $validated['rejection_reason'] ?? null, // Save the optional reason
+            'is_approved' => false, 
+            'rejection_reason' => $validated['rejection_reason'] ?? null, 
         ]);
 
         return redirect()->route('admin.pending')->with('success', $user->name . ' has been suspended and flagged as rejected.');

@@ -31,18 +31,18 @@ class RegisterController extends Controller
 
         $intendedRole = $validated['intended_role'];
 
-        // Default values: everyone starts as a student
+       
         $assignedRole = $intendedRole; 
         
-        // --- LOGIC TO DETERMINE APPROVAL STATUS ---
+        // apporval status checker
         if ($intendedRole === 'scholar_provider') {
-            // A Provider is NOT approved yet, hence false.
+            
             $isApproved = false; 
             $message = 'Registration successful! Your request to be a Provider is pending Admin approval.';
         } 
         
         else {
-            // A Student is automatically approved, hence true.
+            
             $isApproved = true;
             $message = 'Registration is successful!';
         }

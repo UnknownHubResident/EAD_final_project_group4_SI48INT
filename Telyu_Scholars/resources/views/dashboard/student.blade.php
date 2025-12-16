@@ -16,7 +16,7 @@
                 View Available Scholarships
             </a>
         </li>
-        <li class="text-gray-600">Submit an Application (Placeholder)</li>
+        <li class="text-gray-600"><a href="{{ route('student.applications.index') }}" class="text-blue-600 hover:text-blue-800 hover:underline font-medium">View My Applications (History & Status)</a></li>
         <li class="text-gray-600">Update Profile (Placeholder)</li>
     </ul>
 

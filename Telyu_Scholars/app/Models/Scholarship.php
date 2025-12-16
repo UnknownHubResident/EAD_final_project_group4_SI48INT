@@ -26,4 +26,14 @@ class Scholarship extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function applications()
+    {
+        return $this->hasMany(StudentApplication::class);
+    }
+
+    public function getFormattedAmountAttribute()
+{
+    return 'Rp ' . number_format($this->amount, 0, ',', '.');
+}
 }

@@ -8,7 +8,10 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Middleware\AdminMiddleware; 
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\StudentScholarshipController; 
+use App\Http\Controllers\StudentApplicationController;
 use App\Http\Controllers\ProviderScholarshipController; 
+use App\Http\Controllers\ProviderApplicationController;
+use App\Http\Middleware\ProviderRole;
 use Illuminate\Support\Facades\Auth; 
 
 
@@ -16,8 +19,11 @@ use Illuminate\Support\Facades\Auth;
 // 1. PUBLIC ROUTES (Login, Register, and Public Scholarship Listing)
 // ======================================================================
 
-// Root Route
+//route after log in (for student
 Route::get('/', function () {
+    if (Auth::check()){
+        return redirect()->route('dashboard');
+    }
     return redirect()->route('student.scholarships.index'); 
 });
 
@@ -45,17 +51,59 @@ Route::middleware(['auth'])->group(function () {
 
     // Unified Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // ------------------------------------------------------------------
+    // 2.A: STUDENT ONLY APPLICATION MANAGEMENT 
+    // ------------------------------------------------------------------
     
+
+
+ Route::controller(StudentApplicationController::class)
+        ->prefix('student/applications')
+        ->name('student.applications.') 
+        ->group(function () {
+            
+            Route::get('/', 'index')->name('index'); 
+
+            
+            Route::get('/create/{scholarship}', 'create')->name('create'); 
+
+            
+            Route::post('/store/{scholarship}', 'store')->name('store');
+        });
+        
     // ------------------------------------------------------------------
-    // 2.A: PROVIDER ONLY SCHOLARSHIP MANAGEMENT (MODIFIED)
+    // 2.B: PROVIDER ONLY SCHOLARSHIP MANAGEMENT and applcation ammanment
     // ------------------------------------------------------------------
-    Route::middleware(['role:scholar_provider']) // <-- Only Provider allowed
+    Route::middleware([ProviderRole::class]) 
         ->prefix('provider')
         ->name('provider.')
         ->group(function () {
             Route::resource('scholarships', ProviderScholarshipController::class)
                 ->except(['show']);
+
+          Route::controller(ProviderApplicationController::class)
+                ->prefix('applications')
+                ->name('applications.')
+                ->group(function () {
+                    Route::get('/', 'index')->name('index'); 
+                    Route::get('/{application}', 'show')->name('show'); 
+                    
+                    // Status Update Actions
+                    Route::post('/{application}/approve', 'approve')->name('approve'); 
+                    
+                    // Reject Form & Action
+                    Route::get('/{application}/reject/form', 'showRejectForm')->name('reject.form'); 
+                    Route::post('/{application}/reject', 'reject')->name('reject'); 
+                    
+                    // Document Download
+                    Route::get('/{application}/download/{documentType}', 'downloadDocument')->name('download');
+                });
         });
+
+      
+
+
 
     
     // ------------------------------------------------------------------
@@ -75,16 +123,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/pending', [AdminController::class, 'showPendingProviders'])->name('pending'); 
 
             
-            Route::resource('scholarships', ProviderScholarshipController::class) // <-- Admin's separate path
+            Route::resource('scholarships', ProviderScholarshipController::class) 
                 ->except(['show']);
 
          Route::controller(AdminUserController::class)->prefix('users')->name('users.')->group(function () {
-         Route::get('/', 'index')->name('index'); // Lists all users
-         Route::get('/{user}', 'show')->name('show'); //Required for Provider details (Requirement 3)
-         Route::put('/{user}/toggle-status', 'toggleStatus')->name('toggleStatus'); // Deactivate/Reactivate
-         Route::delete('/{user}', 'destroy')->name('destroy'); // Delete
+         Route::get('/', 'index')->name('index'); 
+         Route::get('/{user}', 'show')->name('show'); 
+         Route::put('/{user}/toggle-status', 'toggleStatus')->name('toggleStatus'); 
+         Route::delete('/{user}', 'destroy')->name('destroy'); 
 
          
         });       
     });
+
 });

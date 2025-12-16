@@ -65,6 +65,8 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // YOUR CUSTOM MIDDLEWARE ADDITION GOES HERE
         'role' => \App\Http\Middleware\RoleMiddleware::class,
-        'admin' => \App\Http\Middleware\AdminMiddleware::class, // <-- ADD THIS LINE
+        'admin' => \App\Http\Middleware\AdminMiddleware::class, 
+        'student' => \App\Http\Middleware\StudentRole::class, 
+        'provider.role' => \App\Http\Middleware\ProviderRole::class, 
     ];
 }

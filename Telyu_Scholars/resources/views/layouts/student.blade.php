@@ -7,7 +7,7 @@
     <title>Student | Scholarship</title>
 </head>
 <body class="bg-gray-100 min-h-screen">
-<nav class="bg-blue-600">
+<nav class="bg-red-600">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center text-white">
         <a href="{{ route('student.scholarships.index') }}" class="text-xl font-bold">Tel-U Scholars</a>
         
@@ -27,6 +27,9 @@
                         {{-- Only show Dashboard link if the user is authenticated (which they are) --}}
                         <a href="{{ route('dashboard') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Dashboard</a>
                         
+                        {{-- Link to the functional Application Dashboard (student.dashboard) --}}
+                        <a href="{{ route('student.applications.index') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">My Applications</a>
+
                         {{-- The public scholarship index --}}
                         <a href="{{ route('student.scholarships.index') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Scholarship Directory</a>
                         

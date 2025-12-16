@@ -29,7 +29,7 @@
         </div>
 
         <div class="mb-4">
-            <label class="font-semibold">Amount</label>
+            <label class="font-semibold">Amount (in IDR/rupiah)</label>
             <input type="number" name="amount"
                    class="w-full mt-1 p-3 border rounded-lg focus:ring focus:ring-blue-200">
             @error('amount')

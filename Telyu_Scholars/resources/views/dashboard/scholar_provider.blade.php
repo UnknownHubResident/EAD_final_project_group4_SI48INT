@@ -12,7 +12,7 @@
     <ul class="list-disc ml-6">
         <li><a href="{{ route('provider.scholarships.create') }}" class="text-blue-600 hover:underline">Create New Scholarship Program</a></li>
         <li><a href="{{ route('provider.scholarships.index') }}" class="text-blue-600 hover:underline">Manage Existing Scholarships</a></li>
-        <li>Review Student Applications (Placeholder)</li>
+        <li><a href="{{ route('provider.applications.index') }}" class="text-blue-600 hover:underline">Review Student Applications </a></li>
         <li>View Payment History (Placeholder)</li>
     </ul>
 

@@ -14,9 +14,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
 
-            // ⭐ CRITICAL FIX: These must be nullable in the database
-            // because Providers and Admins do not need them, only Students do.
-            // The *Controller* will enforce 'required' for Students.
+           
             $table->string('student_number')->unique()->nullable();
             $table->string('study_major')->nullable();
             $table->enum('degree_rank', ['Bachelor', 'Master', 'PhD'])->nullable();
@@ -32,7 +30,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // ... (password_reset_tokens and sessions remain the same)
+        
     }
 
     public function down(): void

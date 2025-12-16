@@ -26,7 +26,7 @@
 
   <div class="grid grid-cols-2 gap-4">
     <div>
-      <label class="font-semibold">Amount</label>
+      <label class="font-semibold">Amount (in IDR/rupiah)</label>
       <input type="number" name="amount" step="0.01" class="w-full border p-2 rounded" value="{{ old('amount') }}">
       @error('amount') <div class="text-red-600 text-sm">{{ $message }}</div> @enderror
     </div>

@@ -33,7 +33,7 @@ class AdminUserController extends Controller
     public function toggleStatus(User $user)
     {
         
-         // Prevent changing Admin status
+         
         if ($user->role === 'admin') {
             return back()->with('error', 'Cannot change the status of an Admin account.');
         }
@@ -48,7 +48,7 @@ class AdminUserController extends Controller
         
         if ($user->is_approved) {
             $user->is_rejected = false;
-            $user->rejection_reason = null; // Clears the reason (Requires migration to be run)
+            $user->rejection_reason = null; 
         }
         
         $user->save();
@@ -64,7 +64,7 @@ class AdminUserController extends Controller
      */
     public function destroy(User $user)
     {
-        // Prevent deleting Admin
+        
         if ($user->role === 'admin') {
             return back()->with('error', 'Cannot delete the main Admin account.');
         }

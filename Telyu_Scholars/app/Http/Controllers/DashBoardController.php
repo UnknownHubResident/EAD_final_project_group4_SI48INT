@@ -14,17 +14,17 @@ class DashBoardController extends Controller
 
         $user = Auth::user();
 
-        // 1. Check for REJECTED/SUSPENDED status (Highest Priority)
+        // 1. Check if the user is rejected or pending
         if ($user->is_rejected) {
             return view('rejected-approval');
         } 
 
-        // 2. Check for PENDING status (Not approved AND not rejected)
-        if (!$user->is_approved) {
+        // 2. Check the pending status 
+        if ($user->role === 'scholar_provider' && !$user->is_approved) {
             return view('pending-approval');
         }
 
-        // 3. Routing for APPROVED users
+       // 3. Routing for approved users
         if ($user->role === 'admin') {
             return view('dashboard.admin');
         } 
@@ -33,6 +33,11 @@ class DashBoardController extends Controller
             return view('dashboard.scholar_provider');
         }
 
-        return view('dashboard.student');
+        if ($user->role === 'student') {
+            
+            
+            return view('dashboard.student'); 
+        }
+
     }
 }
