@@ -53,7 +53,12 @@ class User extends Authenticatable
 
     public function scholarships()
     {
-        // Assuming 'user_id' is the foreign key in the 'scholarships' table
+        
         return $this->hasMany(Scholarship::class);
+    }
+
+    public function applications()
+    {
+        return $this->hasMany(StudentApplication::class);
     }
 }

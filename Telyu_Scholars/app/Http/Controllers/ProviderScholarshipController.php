@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProviderScholarshipController extends Controller
 {
-    // 🔹 Determine view prefix based on role
     private function getViewPath()
     {
         return Auth::user()->role === 'admin' ? 'admin' : 'provider';
@@ -21,7 +20,6 @@ class ProviderScholarshipController extends Controller
     {
         $viewPath = $this->getViewPath();
         $user = Auth::user();
-
         $query = Scholarship::latest();
 
         if ($user->role === 'scholar_provider') {
@@ -29,17 +27,13 @@ class ProviderScholarshipController extends Controller
         }
 
         $scholarships = $query->paginate(10);
-
         return view("{$viewPath}.scholarships.index", compact('scholarships'));
     }
 
     public function create()
     {
-        $viewPath = $this->getViewPath();
-
         $majors = Major::orderBy('name')->get();
-
-        return view("{$viewPath}.scholarships.create", compact('majors'));
+        return view("{$this->getViewPath()}.scholarships.create", compact('majors'));
     }
 
     public function store(StoreScholarshipRequest $request)
@@ -57,10 +51,7 @@ class ProviderScholarshipController extends Controller
             $scholarship->majors()->sync($request->majors);
         }
 
-        $routePrefix = Auth::user()->role === 'admin' ? 'admin' : 'provider';
-
-        return redirect()
-            ->route("{$routePrefix}.scholarships.index")
+        return redirect()->route("{$this->getViewPath()}.scholarships.index")
             ->with('success', 'Scholarship created successfully.');
     }
 
@@ -70,10 +61,8 @@ class ProviderScholarshipController extends Controller
             abort(403);
         }
 
-        $viewPath = $this->getViewPath();
         $majors = Major::orderBy('name')->get();
-
-        return view("{$viewPath}.scholarships.edit", compact('scholarship', 'majors'));
+        return view("{$this->getViewPath()}.scholarships.edit", compact('scholarship', 'majors'));
     }
 
     public function update(UpdateScholarshipRequest $request, Scholarship $scholarship)
@@ -83,28 +72,26 @@ class ProviderScholarshipController extends Controller
         }
 
         $data = $request->validated();
+        $data['is_active'] = $request->has('is_active');
 
         if ($request->hasFile('image')) {
             if ($scholarship->image) {
                 Storage::disk('public')->delete($scholarship->image);
             }
             $data['image'] = $request->file('image')->store('scholarships', 'public');
-        } elseif ($request->filled('delete_image')) {
+        } elseif ($request->boolean('delete_image') && $scholarship->image) {
             Storage::disk('public')->delete($scholarship->image);
             $data['image'] = null;
         }
 
         $scholarship->update($data);
 
-        if ($request->filled('majors')) {
+        if ($request->has('majors')) {
             $scholarship->majors()->sync($request->majors);
         }
 
-        $routePrefix = Auth::user()->role === 'admin' ? 'admin' : 'provider';
-
-        return redirect()
-            ->route("{$routePrefix}.scholarships.index")
-            ->with('success', 'Scholarship updated.');
+        return redirect()->route("{$this->getViewPath()}.scholarships.index")
+            ->with('success', 'Scholarship updated successfully.');
     }
 
     public function destroy(Scholarship $scholarship)
@@ -118,11 +105,7 @@ class ProviderScholarshipController extends Controller
         }
 
         $scholarship->delete();
-
-        $routePrefix = Auth::user()->role === 'admin' ? 'admin' : 'provider';
-
-        return redirect()
-            ->route("{$routePrefix}.scholarships.index")
-            ->with('success', 'Scholarship deleted.');
+        return redirect()->route("{$this->getViewPath()}.scholarships.index")
+            ->with('success', 'Scholarship deleted successfully.');
     }
 }

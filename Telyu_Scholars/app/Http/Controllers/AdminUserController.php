@@ -8,13 +8,9 @@ use App\Http\Controllers\Controller;
 
 class AdminUserController extends Controller
 {
-    /**
-     * Display a listing of the users.
-     */
     public function index()
     {
         $users = User::latest()->paginate(15);
-        
         return view('admin.users.index', compact('users'));
     }
 
@@ -24,38 +20,41 @@ class AdminUserController extends Controller
              return redirect()->route('admin.users.index')
                  ->with('error', 'Details view is only applicable for Providers.');
         }
-        
+
+        $user = $user->load('scholarships');
         return view('admin.users.show', compact('user'));
     } 
 
     public function toggleStatus(User $user)
     {
-        // Prevent changing Admin status
         if ($user->role === 'admin') {
             return back()->with('error', 'Cannot change the status of an Admin account.');
         }
 
+        // Keep your original safeguard
+        if ($user->role === 'scholar_provider') {
+            return back()->with('error', 'Use the dedicated approval/rejection pages for Scholar Providers.');
+        }
+
         $user->is_approved = !$user->is_approved;
+
+        if ($user->is_approved) {
+            $user->is_rejected = false;
+            $user->rejection_reason = null; 
+        }
+        
         $user->save();
 
         $status = $user->is_approved ? 'Activated' : 'Deactivated';
-        
         return back()->with('success', "User '{$user->name}' has been successfully {$status}.");
     }
 
-    /**
-     * Remove the specified user from storage. (admin.users.destroy)
-     */
     public function destroy(User $user)
     {
-        // Prevent deleting Admin
         if ($user->role === 'admin') {
             return back()->with('error', 'Cannot delete the main Admin account.');
         }
-
         $user->delete();
-
         return back()->with('success', "User '{$user->name}' has been permanently deleted.");
     }
-
 }

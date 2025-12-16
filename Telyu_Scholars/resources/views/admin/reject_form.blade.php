@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-xl">
-        <h1 class="text-3xl font-bold mb-6 text-red-700 border-b pb-2">💀 Finalize Provider Rejection/Suspension</h1>
+        <h1 class="text-3xl font-bold mb-6 text-red-700 border-b pb-2">⛔ Finalize Provider Rejection/Suspension</h1>
 
         <div class="bg-red-50 p-4 rounded-lg border border-red-200 mb-6">
             <h2 class="text-xl font-semibold mb-2 text-red-800">Provider Details</h2>

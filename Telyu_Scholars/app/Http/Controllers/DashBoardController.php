@@ -13,33 +13,36 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // 1. Logika untuk STUDENT
-        if ($user->role === 'student') {
-            
-            $majors = Major::all();
+        // 1. Guard Checks (Your Logic)
+        if ($user->is_rejected) {
+            return view('rejected-approval');
+        } 
 
+        if ($user->role === 'scholar_provider' && !$user->is_approved) {
+            return view('pending-approval');
+        }
+
+        // 2. Student Logic (Merged from Main)
+        if ($user->role === 'student') {
+            $majors = Major::all();
             $scholarships = Scholarship::with('majors')
                 ->where('is_active', true)
                 ->latest()
                 ->paginate(9);
 
-            // Ini mengarah ke resources/views/dashboard/student.blade.php
             return view('dashboard.student', compact('majors', 'scholarships'));
         }
 
-        // 2. Logika untuk PROVIDER
+        // 3. Provider Logic
         if ($user->role === 'scholar_provider') {
-            // PERBAIKAN: Mengarah ke resources/views/dashboard/scholar_provider.blade.php
             return view('dashboard.scholar_provider'); 
         }
 
-        // 3. Logika untuk ADMIN
+        // 4. Admin Logic
         if ($user->role === 'admin') {
-            // PERBAIKAN: Mengarah ke resources/views/dashboard/admin.blade.php
             return view('dashboard.admin'); 
         }
 
-        // Default fallback (Jika role tidak dikenali, logout atau tampilkan 403)
         abort(403, 'Unauthorized action.');
     }
 }

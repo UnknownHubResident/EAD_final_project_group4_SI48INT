@@ -3,6 +3,25 @@
 @section('content')
 <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-8">
     
+
+    <hr class="my-4">
+    
+    <h3>Provider Menu</h3>
+    <ul class="list-disc ml-6">
+        <li><a href="{{ route('provider.scholarships.create') }}" class="text-blue-600 hover:underline">Create New Scholarship Program</a></li>
+        <li><a href="{{ route('provider.scholarships.index') }}" class="text-blue-600 hover:underline">Manage Existing Scholarships</a></li>
+        <li><a href="{{ route('provider.applications.index') }}" class="text-blue-600 hover:underline">Review Student Applications </a></li>
+        <li>View Payment History (Placeholder)</li>
+    </ul>
+
+    <p class="mt-4"><small>Role: {{ Auth::user()->role }} | Approved: {{ Auth::user()->is_approved ? 'Yes' : 'No' }}</small></p>
+    
+    {{-- ✅ CORRECTED: Logout form re-added --}}
+    <form action="{{ route('logout') }}" method="POST" class="mt-4">
+        @csrf
+        <button type="submit" style="background-color: #f59e0b; color: white; padding: 8px 15px; border: none; cursor: pointer; border-radius: 4px;">Logout</button>
+    </form>
+
     {{-- 1. Header Section --}}
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-100 pb-6">
         <div>
@@ -108,6 +127,7 @@
             </button>
         </form>
     </div>
+
 
 </div>
 @endsection

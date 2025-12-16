@@ -8,26 +8,17 @@ class RoleMiddleware
 {
     public function handle($request, Closure $next, ...$roles)
     {
-        // If user is not logged in → redirect to login
         if (!auth()->check()) {
             return redirect()->route('login');
         }
 
         $user = auth()->user();
 
-        // If user role is NOT in allowed roles → deny access
         if (!in_array($user->role, $roles)) {
-
-            // If request is expecting JSON (API)
             if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => 'Unauthorized access'
-                ], 403);
+                return response()->json(['message' => 'Unauthorized access'], 403);
             }
-
-            // Normal UI request → redirect with message
-            return redirect()->route('dashboard')
-                ->with('error', 'You are not authorized to access this page.');
+            return redirect()->route('dashboard')->with('error', 'You are not authorized to access this page.');
         }
 
         return $next($request);

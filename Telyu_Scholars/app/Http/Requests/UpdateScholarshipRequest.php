@@ -25,6 +25,7 @@ class UpdateScholarshipRequest extends FormRequest
             'deadline' => 'required|date|after:today',
             'image' => 'nullable|image|max:2048',
             'is_active' => 'sometimes|boolean',
+            'delete_image' => 'nullable|boolean',
         ];
     }
 }

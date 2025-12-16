@@ -7,7 +7,11 @@
   <title>external provider | Scholarship</title>
 </head>
 <body class="bg-gray-100 min-h-screen">
+
+<nav class="bg-red-700">
+
 <nav class="bg-red-900">
+
   <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center text-white">
    <a href="{{ route('dashboard') }}" class="text-xl font-bold">Provider Panel</a>
     <div class="relative inline-block text-left">
@@ -22,6 +26,7 @@
         <div class="py-1" role="none">
             <a href="{{ route('dashboard') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Dashboard</a>
             <a href="{{ route('provider.scholarships.index') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Manage My Scholarships</a>
+            <a href="{{ route('provider.applications.index') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">Review Student Applications</a>
             
             <form method="POST" action="{{ route('logout') }}" role="none">
                 @csrf
