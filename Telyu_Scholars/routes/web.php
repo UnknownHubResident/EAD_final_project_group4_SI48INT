@@ -9,7 +9,8 @@ use App\Http\Middleware\AdminMiddleware; // From main
 use App\Http\Controllers\StudentScholarshipController; // From fasyaaa
 use App\Http\Controllers\ProviderScholarshipController; // From fasyaaa
 use Illuminate\Support\Facades\Auth; // From fasyaaa (Though often implicitly loaded)
-
+use App\Http\Controllers\ApplicationController; // From prabhjot
+use App\Http\Controllers\DocumentController; // from prabhjot
 
 // ======================================================================
 // 1. PUBLIC ROUTES (Login, Register, and Public Scholarship Listing)
@@ -77,4 +78,43 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.destroy');
             Route::patch('/users/{user}/toggle', [AdminController::class, 'toggleActiveStatus'])->name('users.toggle');
         });
+
+
+    // ==========================================================
+    // STUDENT APPLICATION ROUTES
+    // ==========================================================
+
+    // Show application form
+    Route::get('/apply', [ApplicationController::class, 'create'])
+        ->name('application.create');
+
+    // Submit application
+    Route::post('/apply', [ApplicationController::class, 'store'])
+        ->name('application.store');
+
+    // View application history
+    Route::get('/application/history', [ApplicationController::class, 'history'])
+        ->name('application.history');
+
+    Route::post('/documents/upload', [DocumentController::class, 'store'])
+    ->name('documents.store');
+
+    // ==========================================================
+    // ADMIN APPROVAL ROUTES
+    // ==========================================================
+    Route::middleware(['auth', 'admin'])->group(function () {
+        // Show pending student providers
+    Route::get('/admin/pending', [AdminController::class, 'showPendingProviders'])
+        ->name('admin.pending');
+
+        // Approve a provider
+    Route::post('/admin/approve/{user}', [AdminController::class, 'approveProvider'])
+        ->name('admin.approveProvider');
+
+        // Reject a provider
+    Route::post('/admin/reject/{user}', [AdminController::class, 'rejectProvider'])
+        ->name('admin.rejectProvider'); 
+    });
+
+
 });
