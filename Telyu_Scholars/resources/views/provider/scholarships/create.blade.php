@@ -1,11 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.provider')
 
 @section('content')
 <div class="max-w-3xl mx-auto py-10">
 
     <h1 class="text-2xl font-bold mb-6">Create Scholarship</h1>
 
-    <form action="{{ route('scholarships.store') }}" method="POST"
+    <form action="{{ route('provider.scholarships.store') }}" method="POST"
+        enctype="multipart/form-data"
         class="bg-white p-6 rounded-lg shadow">
         @csrf
 
@@ -28,7 +29,7 @@
         </div>
 
         <div class="mb-4">
-            <label class="font-semibold">Amount</label>
+            <label class="font-semibold">Amount (in IDR/rupiah)</label>
             <input type="number" name="amount"
                    class="w-full mt-1 p-3 border rounded-lg focus:ring focus:ring-blue-200">
             @error('amount')
@@ -45,6 +46,26 @@
             @enderror
         </div>
 
+        <div class="mb-4">
+            <label for="image" class="font-semibold">Image</label>
+            <input type="file" name="image" id="image"
+                class="w-full mt-1 p-3 border rounded-lg focus:ring focus:ring-blue-200">
+            @error('image')
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <label class="block mb-2 font-medium">Eligible Majors</label>
+
+        <div class="grid grid-cols-2 gap-2 mb-4">
+        @foreach($majors as $major)
+            <label class="flex items-center gap-2">
+                <input type="checkbox" name="majors[]" value="{{ $major->id }}">
+                {{ $major->name }}
+            </label>
+        @endforeach
+        </div>
+        
         <button class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">
             Create
         </button>

@@ -12,7 +12,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/redirect-by-role';  // ✅ Put right here
+    public const HOME = '/redirect-by-role';  
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.

@@ -1,39 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Pending Provider Requests</title>
-</head>
-<body>
-    <div style="padding: 20px; background-color: #fef2f2; border: 1px solid #f87171;">
-        <h1>👑 Pending Scholar Provider Requests</h1>
-        
-        @if (session('success'))
-            <p style="color: green; border: 1px solid green; padding: 10px;">{{ session('success') }}</p>
-        @endif
-        
-        <p>You have **{{ count($pendingUsers) }}** users awaiting approval.</p>
+@extends('layouts.admin')
 
-        <hr>
+@section('content')
 
-        @forelse ($pendingUsers as $user)
-            <div style="border: 1px solid #ccc; margin-bottom: 15px; padding: 10px; background-color: white;">
-                <h3>{{ $user->name }} (ID: {{ $user->id }})</h3>
-                <p>Email: <strong>{{ $user->email }}</strong></p>
-                <p>Requested Role: Scholar Provider</p>
+<h1 class="text-3xl font-bold mb-6 text-red-700">👑 Pending Scholar Provider Requests</h1>
+
+@if (count($pendingUsers) > 0)
+    <p class="mb-4 text-gray-700">You have **{{ count($pendingUsers) }}** users awaiting approval.</p>
+
+    <div class="space-y-4">
+        @foreach ($pendingUsers as $user)
+            <div class="p-4 border border-gray-200 bg-white rounded-lg shadow">
+                <h3 class="text-xl font-semibold">{{ $user->name }} (ID: {{ $user->id }})</h3>
+                <p class="text-gray-600">Email: <strong>{{ $user->email }}</strong></p>
+                <p class="text-gray-600 mb-3">Requested Role: Scholar Provider</p>
                 
-                <form method="POST" action="{{ route('admin.approve', $user) }}" style="margin-top: 10px;">
+
+                <div class="flex space-x-3 mt-4"> 
+                    
+                    {{-- 1. Approve (POST request, Correct) --}}
+                    <form method="POST" action="{{ route('admin.approve', $user) }}">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-bold transition duration-150">
+                            ✅ Approve Provider
+                        </button>
+                    </form>
+
+                    {{-- 2. Reject (GET link to the rejection form, CORRECT) --}}
+                    <a href="{{ route('admin.reject.form', $user) }}" class="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 font-bold transition duration-150 flex items-center">
+                        ⛔ Reject Provider
+                    </a>
+                    
+                </div>
+                
+
+                {{-- Only the Approve form remains, without the flex wrapper since it's the only button --}}
+                <form method="POST" action="{{ route('admin.approve', $user) }}">
                     @csrf
-                    <button type="submit" style="background-color: #4CAF50; color: white; padding: 8px 15px; border: none; cursor: pointer; font-weight: bold;">
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-bold transition duration-150">
                         ✅ Approve Provider
                     </button>
                 </form>
-            </div>
-        @empty
-            <p style="font-size: 1.2em; color: #f87171;">🎉 All pending requests have been approved! The list is clear.</p>
-        @endforelse
 
-        <p style="margin-top: 20px;"><a href="{{ route('dashboard') }}">Back to Admin Dashboard</a></p>
+            </div>
+        @endforeach
     </div>
-</body>
-</html>
+
+@else
+    <div class="p-6 bg-red-100 text-red-700 border border-red-400 rounded-lg">
+        <p class="font-bold text-lg">🎉 All pending requests have been approved! The list is clear.</p>
+    </div>
+@endif
+
+<p class="mt-8">
+    <a href="{{ route('dashboard') }}" class="text-blue-600 hover:underline">← Back to Admin Dashboard</a>
+</p>
+
+@endsection

@@ -15,12 +15,13 @@ class StoreScholarshipRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255|unique:scholarships,title',
-            'provider' => 'nullable|string|max:255',
             'description' => 'required|string',
             'amount' => 'required|numeric|min:0',
             'deadline' => 'required|date|after:today',
             'image' => 'nullable|image|max:2048',
             'is_active' => 'sometimes|boolean',
+            'majors' => 'nullable|array',
+            'majors.*' => 'exists:majors,id',
         ];
     }
 }
