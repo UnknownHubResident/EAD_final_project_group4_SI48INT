@@ -3,33 +3,35 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    public function handle($request, Closure $next, ...$roles)
+    /**
+     * Handle an incoming request.
+     *
+     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
+     * @param string ...$roles The roles required for access (e.g., 'admin', 'editor')
+     */
+    public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        // If user is not logged in → redirect to login
-        if (!auth()->check()) {
+        // 1. Check if the user is authenticated.
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        $user = auth()->user();
+        $userRole = Auth::user()->role;
 
-        // If user role is NOT in allowed roles → deny access
-        if (!in_array($user->role, $roles)) {
-
-            // If request is expecting JSON (API)
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => 'Unauthorized access'
-                ], 403);
-            }
-
-            // Normal UI request → redirect with message
-            return redirect()->route('home')
-                ->with('error', 'You are not authorized to access this page.');
+        // 2. Check if the user's role is in the list of required roles.
+        // The in_array() function checks if a value exists in an array.
+        if (!in_array($userRole, $roles)) {
+            // Access denied
+            return redirect('/dashboard')->with('error', "Access Denied. You do not have the required role privileges.");
         }
 
+        // 3. User is authorized, proceed.
         return $next($request);
     }
 }
