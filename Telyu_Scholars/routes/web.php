@@ -1,44 +1,30 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
-use App\Http\Controllers\DashboardController; // From main
-use App\Http\Controllers\AdminController; // From main
-use App\Http\Controllers\Auth\LoginController; // From main
-use App\Http\Controllers\Auth\RegisterController; // From main
-use App\Http\Middleware\AdminMiddleware; // From main
-use App\Http\Controllers\StudentScholarshipController; // From fasyaaa
-use App\Http\Controllers\ProviderScholarshipController; // From fasyaaa
-use Illuminate\Support\Facades\Auth; // From fasyaaa (Though often implicitly loaded)
-use App\Http\Controllers\ApplicationController; // From prabhjot
-use App\Http\Controllers\DocumentController; // from prabhjot
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\StudentScholarshipController;
+use App\Http\Controllers\StudentApplicationController;
+use App\Http\Controllers\ProviderScholarshipController;
+use App\Http\Controllers\ProviderApplicationController;
+use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\ProviderRole;
+use Illuminate\Support\Facades\Auth;
 
 // ======================================================================
 // 1. PUBLIC ROUTES (Login, Register, and Public Scholarship Listing)
 // ======================================================================
 
-// Root Route - Redirects to register/login (From main)
-=======
-use App\Http\Controllers\DashboardController; 
-use App\Http\Controllers\AdminController; 
-use App\Http\Controllers\Auth\LoginController; 
-use App\Http\Controllers\Auth\RegisterController; 
-use App\Http\Middleware\AdminMiddleware; 
-use App\Http\Controllers\AdminUserController;
-use App\Http\Controllers\StudentScholarshipController; 
-use App\Http\Controllers\StudentApplicationController;
-use App\Http\Controllers\ProviderScholarshipController; 
-use App\Http\Controllers\ProviderApplicationController;
-use App\Http\Middleware\ProviderRole;
-use Illuminate\Support\Facades\Auth; 
-
-// 1. PUBLIC ROUTES
->>>>>>> 2743df284101299db5d73c51072f3971f2b6bf7d
 Route::get('/', function () {
-    if (Auth::check()){
+    if (Auth::check()) {
         return redirect()->route('dashboard');
     }
-    return redirect()->route('student.scholarships.index'); 
+    return redirect()->route('student.scholarships.index');
 });
 
 Route::get('/register', [RegisterController::class, 'ShowRegisFrom'])->name('register');
@@ -49,24 +35,49 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::get('/scholarships', [StudentScholarshipController::class, 'index'])->name('student.scholarships.index');
 Route::get('/scholarships/{scholarship}', [StudentScholarshipController::class, 'show'])->name('student.scholarships.show');
 
-// 2. PROTECTED ROUTES
+// ======================================================================
+// 2. PROTECTED ROUTES (Authenticated Users Only)
+// ======================================================================
+
 Route::middleware(['auth'])->group(function () {
-    
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); 
+
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // 2.A: STUDENT ONLY
+    // ======================================================================
+    // 2.A: STUDENT APPLICATION ROUTES
+    // ======================================================================
+
+    Route::get('/apply', [ApplicationController::class, 'create'])
+        ->name('application.create');
+
+    Route::post('/apply', [ApplicationController::class, 'store'])
+        ->name('application.store');
+
+    Route::get('/application/history', [ApplicationController::class, 'history'])
+        ->name('application.history');
+
+    Route::post('/documents/upload', [DocumentController::class, 'store'])
+        ->name('documents.store');
+
+    Route::get('/documents/{document}/download', [DocumentController::class, 'download'])
+        ->name('documents.download');
+
+    // Student Scholarship Routes
     Route::controller(StudentApplicationController::class)
         ->prefix('student/applications')
-        ->name('student.applications.') 
+        ->name('student.applications.')
         ->group(function () {
-            Route::get('/', 'index')->name('index'); 
-            Route::get('/create/{scholarship}', 'create')->name('create'); 
+            Route::get('/', 'index')->name('index');
+            Route::get('/create/{scholarship}', 'create')->name('create');
             Route::post('/store/{scholarship}', 'store')->name('store');
         });
-        
-    // 2.B: PROVIDER ONLY
-    Route::middleware([ProviderRole::class]) 
+
+    // ======================================================================
+    // 2.B: PROVIDER ROUTES (Scholar Provider Only)
+    // ======================================================================
+
+    Route::middleware([ProviderRole::class])
         ->prefix('provider')
         ->name('provider.')
         ->group(function () {
@@ -76,74 +87,50 @@ Route::middleware(['auth'])->group(function () {
                 ->prefix('applications')
                 ->name('applications.')
                 ->group(function () {
-                    Route::get('/', 'index')->name('index'); 
-                    Route::get('/{application}', 'show')->name('show'); 
-                    Route::post('/{application}/approve', 'approve')->name('approve'); 
-                    Route::get('/{application}/reject/form', 'showRejectForm')->name('reject.form'); 
-                    Route::post('/{application}/reject', 'reject')->name('reject'); 
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/{application}', 'show')->name('show');
+                    Route::post('/{application}/approve', 'approve')->name('approve');
+                    Route::get('/{application}/reject/form', 'showRejectForm')->name('reject.form');
+                    Route::post('/{application}/reject', 'reject')->name('reject');
                     Route::get('/{application}/download/{documentType}', 'downloadDocument')->name('download');
                 });
         });
 
-    // 3. ADMIN ONLY
-    Route::middleware(['auth', AdminMiddleware::class]) 
-        ->prefix('admin') 
-        ->name('admin.') 
+    // ======================================================================
+    // 2.C: ADMIN ROUTES (Admin Only)
+    // ======================================================================
+
+    Route::middleware(['auth', AdminMiddleware::class])
+        ->prefix('admin')
+        ->name('admin.')
         ->group(function () {
-            
-            // Provider Approval & Rejection Logic
-            Route::get('/pending', [AdminController::class, 'showPendingProviders'])->name('pending'); 
-            Route::post('/approve/{user}', [AdminController::class, 'approveProvider'])->name('approve'); 
-            Route::get('/providers/{user}/reject/form', [AdminController::class, 'showRejectForm'])->name('reject.form'); 
+
+            // Provider Management
+            Route::get('/pending', [AdminController::class, 'showPendingProviders'])->name('pending');
+            Route::post('/approve/{user}', [AdminController::class, 'approveProvider'])->name('approve');
+            Route::get('/providers/{user}/reject/form', [AdminController::class, 'showRejectForm'])->name('reject.form');
             Route::post('/providers/{user}/reject', [AdminController::class, 'finalizeReject'])->name('reject.finalize');
             Route::post('/providers/{user}/unreject', [AdminController::class, 'unrejectProvider'])->name('unreject');
 
+            // Admin Scholarship Management
             Route::resource('scholarships', ProviderScholarshipController::class)->except(['show']);
 
-            Route::controller(AdminUserController::class)->prefix('users')->name('users.')->group(function () {
-                Route::get('/', 'index')->name('index'); 
-                Route::get('/{user}', 'show')->name('show'); 
-                Route::put('/{user}/toggle-status', 'toggleStatus')->name('toggleStatus'); 
-                Route::delete('/{user}', 'destroy')->name('destroy'); 
-            });        
+            // Admin User Management
+            Route::controller(AdminUserController::class)
+                ->prefix('users')
+                ->name('users.')
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/{user}', 'show')->name('show');
+                    Route::put('/{user}/toggle-status', 'toggleStatus')->name('toggleStatus');
+                    Route::delete('/{user}', 'destroy')->name('destroy');
+                });
+
+            // Admin Application Approval/Rejection
+            Route::get('/applications', [ApplicationController::class, 'indexAdmin'])->name('applications.index');
+            Route::get('/applications/{application}', [ApplicationController::class, 'showAdmin'])->name('applications.show');
+            Route::post('/applications/{application}/approve', [ApplicationController::class, 'approve'])->name('applications.approve');
+            Route::post('/applications/{application}/reject', [ApplicationController::class, 'reject'])->name('applications.reject');
         });
-
-
-    // ==========================================================
-    // STUDENT APPLICATION ROUTES
-    // ==========================================================
-
-    // Show application form
-    Route::get('/apply', [ApplicationController::class, 'create'])
-        ->name('application.create');
-
-    // Submit application
-    Route::post('/apply', [ApplicationController::class, 'store'])
-        ->name('application.store');
-
-    // View application history
-    Route::get('/application/history', [ApplicationController::class, 'history'])
-        ->name('application.history');
-
-    Route::post('/documents/upload', [DocumentController::class, 'store'])
-    ->name('documents.store');
-
-    // ==========================================================
-    // ADMIN APPROVAL ROUTES
-    // ==========================================================
-    Route::middleware(['auth', 'admin'])->group(function () {
-        // Show pending student providers
-    Route::get('/admin/pending', [AdminController::class, 'showPendingProviders'])
-        ->name('admin.pending');
-
-        // Approve a provider
-    Route::post('/admin/approve/{user}', [AdminController::class, 'approveProvider'])
-        ->name('admin.approveProvider');
-
-        // Reject a provider
-    Route::post('/admin/reject/{user}', [AdminController::class, 'rejectProvider'])
-        ->name('admin.rejectProvider'); 
-    });
-
 
 });

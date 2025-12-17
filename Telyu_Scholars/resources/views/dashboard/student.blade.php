@@ -6,7 +6,7 @@
     <h1 class="text-3xl font-bold mb-4 text-blue-600">📚 Student Dashboard</h1>
 
     {{-- Username is displayed here, as requested --}}
-    <p class="mb-4 text-lg">Welcome, **{{ Auth::user()->name }}**! Your student portal is active.</p>
+    <p class="mb-4 text-lg">Welcome, <strong>{{ Auth::user()->name }}</strong>! Your student portal is active.</p>
     <p class="mb-6 text-gray-600">This page confirms successful routing for a standard user.</p>
 
     <h2 class="text-xl font-semibold mb-3">Student Menu</h2>
@@ -34,8 +34,10 @@
         </button>
     </form>
 
+</div>
+
 {{-- Container Utama dengan Style Card Modern --}}
-<div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mt-6">
     
     {{-- Header Section --}}
     <div class="mb-8 border-b border-gray-100 pb-6 flex justify-between items-end">
@@ -47,7 +49,7 @@
                 Welcome back, <span class="font-bold text-gray-900">{{ Auth::user()->name ?? 'Student' }}</span>!
             </p>
         </div>
-        {{-- Status Badge (Dipindah ke atas agar lebih rapi, opsional) --}}
+        {{-- Status Badge --}}
         <div class="hidden md:block">
              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ Auth::user()->is_approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                 Status: {{ Auth::user()->is_approved ? 'Active' : 'Pending' }}
@@ -55,14 +57,14 @@
         </div>
     </div>
 
-    {{-- Info Box (Pengganti teks routing) --}}
+    {{-- Info Box --}}
     <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-8 rounded-r-lg">
         <p class="text-sm text-blue-700">
             <strong>Info:</strong> Your student portal is active and ready to use.
         </p>
     </div>
 
-    {{-- Menu Section (List diubah menjadi Interactive Rows) --}}
+    {{-- Menu Section --}}
     <h2 class="text-xl font-bold mb-4 text-gray-800">Student Menu</h2>
     
     <div class="space-y-3">
@@ -81,7 +83,7 @@
             <svg class="w-5 h-5 text-gray-400 group-hover:text-red-500 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </a>
 
-        {{-- Item 2: Placeholder (Styled as disabled) --}}
+        {{-- Item 2: Placeholder --}}
         <div class="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-xl opacity-60 cursor-not-allowed">
             <div class="flex items-center gap-4">
                 <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
@@ -127,6 +129,6 @@
         </form>
     </div>
 
-
 </div>
+
 @endsection

@@ -38,7 +38,7 @@ class ApplicationController extends Controller
             'scholarship_id' => 'required|exists:scholarships,id',
         ]);
 
-        // Check for duplicate
+        // Prevent duplicate applications for same scholarship
         $duplicate = Application::where('user_id', Auth::id())
             ->where('scholarship_id', $request->scholarship_id)
             ->exists();
@@ -61,7 +61,7 @@ class ApplicationController extends Controller
     }
 
     /**
-     * View application history
+     * View student application history
      */
     public function history()
     {
