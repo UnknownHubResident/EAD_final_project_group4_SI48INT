@@ -31,13 +31,14 @@
                 @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <div class="bg-blue-50 p-3 rounded-md border border-blue-100 mt-4">
-    <label class="block text-xs font-bold text-blue-600 uppercase tracking-wide">Scholarship Owner / Provider</label>
-    <p class="text-gray-800 font-medium">
-        {{ $scholarship->provider->name ?? 'System Admin' }} 
-        <span class="text-gray-500 text-sm font-normal">({{ $scholarship->provider->email ?? 'N/A' }})</span>
-    </p>
-</div>
+            {{-- Provider Info --}}
+            <div class="bg-blue-50 p-3 rounded-md border border-blue-100">
+                <label class="block text-xs font-bold text-blue-600 uppercase tracking-wide">Scholarship Owner / Provider</label>
+                <p class="text-gray-800 font-medium">
+                    {{ $scholarship->provider->name ?? 'System Admin' }} 
+                    <span class="text-gray-500 text-sm font-normal">({{ $scholarship->provider->email ?? 'N/A' }})</span>
+                </p>
+            </div>
 
             {{-- Description --}}
             <div>
@@ -61,6 +62,23 @@
                 </div>
             </div>
 
+            {{-- Eligible Majors (Merged back in) --}}
+            <div class="pt-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Eligible Majors</label>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-gray-50 p-4 rounded-md border border-gray-200">
+                    @foreach($majors as $major)
+                        <label class="flex items-center space-x-2 text-sm cursor-pointer">
+                            <input type="checkbox" 
+                                   name="majors[]" 
+                                   value="{{ $major->id }}" 
+                                   @checked(in_array($major->id, old('majors', $scholarship->majors->pluck('id')->toArray())))
+                                   class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                            <span class="text-gray-700">{{ $major->name }}</span>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
             {{-- Image Management Section --}}
             <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Scholarship Cover Image</label>
@@ -75,18 +93,16 @@
                                 <input type="checkbox" name="delete_image" value="1" class="rounded border-gray-300 text-red-600 focus:ring-red-500">
                                 <span class="ml-2 text-sm text-red-600 font-medium">Remove current image</span>
                             </label>
-                            <p class="text-xs text-gray-500 italic">Check this if you want to remove the image without uploading a new one.</p>
                         </div>
                     </div>
                 @endif
 
                 <div class="mt-2">
                     <input type="file" name="image" accept="image/*" class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
-                    <p class="text-xs text-gray-400 mt-2">Recommended: 800x400px. Max size 2MB.</p>
                 </div>
             </div>
 
-            {{-- Status Checkbox (The Activation Fix) --}}
+            {{-- Status Checkbox --}}
             <div class="py-4 border-t border-gray-100">
                 <div class="flex items-center justify-between">
                     <div>
@@ -109,39 +125,7 @@
                     Update Scholarship
                 </button>
             </div>
-
         </div>
     </form>
 </div>
-@endsection
-
-    @endif
-    <input type="file" name="image" accept="image/*" class="w-full">
-  </div>
-
-  <div>
-    <label class="inline-flex items-center">
-      <input type="checkbox" name="is_active" value="1" {{ $scholarship->is_active ? 'checked' : '' }} class="mr-2">
-      <span>Active</span>
-    </label>
-  </div>
-
-  <div class="mt-4">
-            <label class="block font-semibold mb-2">Eligible Majors</label>
-
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                @foreach($majors as $major)
-                    <label class="flex items-center space-x-2 text-sm">
-                        <input type="checkbox"
-                               name="majors[]"
-                               value="{{ $major->id }}">
-                        <span>{{ $major->name }}</span>
-                    </label>
-                @endforeach
-    </div>
-
-  <div class="mt-4">
-    <button class="px-4 py-2 bg-yellow-500 text-white rounded">Update</button>
-  </div>
-</form>
 @endsection

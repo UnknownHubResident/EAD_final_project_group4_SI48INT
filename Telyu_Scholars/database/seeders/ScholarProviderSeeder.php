@@ -14,12 +14,13 @@ class ScholarProviderSeeder extends Seeder
      */
     public function run(): void
     {
-        user::create([
+        User::create([
             'name' => 'Jasso_study',
             'email' => 'jasso@gmail.com',
             'password' => Hash::make('09876'),
             'email_verified_at' => now(),
-            'role' => 'scholar_provider'
+            'role' => 'scholar_provider',
+            'is_approved' => true,
         ]);
     }
 }

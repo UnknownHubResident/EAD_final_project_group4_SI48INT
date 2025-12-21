@@ -9,40 +9,52 @@ use App\Models\Scholarship;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        $user = Auth::user();
+   public function index()
+{
+    $user = Auth::user();
 
-        // 1. Guard Checks (Your Logic)
-        if ($user->is_rejected) {
-            return view('rejected-approval');
-        } 
+    // 1. PRIORITY: If they are formally REJECTED, show the red screen
+    if ($user->is_rejected) {
+        return view('rejected-approval');
+    } 
 
-        if ($user->role === 'scholar_provider' && !$user->is_approved) {
-            return view('pending-approval');
-        }
-
-        // 2. Student Logic (Merged from Main)
+    // 2. If the user is NOT approved
+    if (!$user->is_approved) {
+        // Students always go to Deactivated
         if ($user->role === 'student') {
-            $majors = Major::all();
-            $scholarships = Scholarship::with('majors')
-                ->where('is_active', true)
-                ->latest()
-                ->paginate(9);
-
-            return view('dashboard.student', compact('majors', 'scholarships'));
+            return view('auth.deactivated');
         }
 
-        // 3. Provider Logic
+        // Provider Logic: Distinguish between "New" and "Deactivated"
         if ($user->role === 'scholar_provider') {
-            return view('dashboard.scholar_provider'); 
+            /* If the user was created and updated at the exact same time,
+               it means an Admin has NEVER touched/approved this account yet.
+            */
+            if ($user->created_at->eq($user->updated_at)) {
+                return view('pending-approval'); 
+            }
+            
+            // If updated_at is different, it means they were once approved 
+            // but now the Admin has toggled them to 'Deactivated'
+            return view('auth.deactivated'); 
         }
-
-        // 4. Admin Logic
-        if ($user->role === 'admin') {
-            return view('dashboard.admin'); 
-        }
-
-        abort(403, 'Unauthorized action.');
     }
+
+    // 3. Normal logic for Active Users...
+    if ($user->role === 'student') {
+        $majors = Major::all();
+        $scholarships = Scholarship::with('majors')->where('is_active', true)->latest()->paginate(9);
+        return view('dashboard.student', compact('majors', 'scholarships'));
+    }
+
+    if ($user->role === 'scholar_provider') {
+        return view('dashboard.scholar_provider'); 
+    }
+
+    if ($user->role === 'admin') {
+        return view('dashboard.admin'); 
+    }
+
+    abort(403);
+}
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('scholarship_id')->constrained()->onDelete('cascade');
 
-            $table->enum('status', ['applied', 'pending', 'accepted', 'rejected'])->default('applied');
+            $table->string('status', 20)->default('applied');
 
             $table->string('student_number')->nullable();
             $table->string('study_major')->nullable();

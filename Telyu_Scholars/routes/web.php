@@ -30,6 +30,7 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::get('/scholarships', [StudentScholarshipController::class, 'index'])->name('student.scholarships.index');
 Route::get('/scholarships/{scholarship}', [StudentScholarshipController::class, 'show'])->name('student.scholarships.show');
 
+
 // 2. PROTECTED ROUTES
 Route::middleware(['auth'])->group(function () {
     
@@ -45,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/create/{scholarship}', 'create')->name('create'); 
             Route::post('/store/{scholarship}', 'store')->name('store');
         });
+
         
     // 2.B: PROVIDER ONLY
     Route::middleware([ProviderRole::class]) 

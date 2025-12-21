@@ -27,26 +27,18 @@ class AdminUserController extends Controller
 
     public function toggleStatus(User $user)
     {
-        if ($user->role === 'admin') {
-            return back()->with('error', 'Cannot change the status of an Admin account.');
-        }
+       if ($user->role === 'admin') {
+        return back()->with('error', 'Cannot change the status of an Admin account.');
+    }
 
-        // Keep your original safeguard
-        if ($user->role === 'scholar_provider') {
-            return back()->with('error', 'Use the dedicated approval/rejection pages for Scholar Providers.');
-        }
+    
+    $user->is_approved = !$user->is_approved;
 
-        $user->is_approved = !$user->is_approved;
+   
+    $user->save();
 
-        if ($user->is_approved) {
-            $user->is_rejected = false;
-            $user->rejection_reason = null; 
-        }
-        
-        $user->save();
-
-        $status = $user->is_approved ? 'Activated' : 'Deactivated';
-        return back()->with('success', "User '{$user->name}' has been successfully {$status}.");
+    $status = $user->is_approved ? 'Activated' : 'Deactivated';
+    return back()->with('success', "User '{$user->name}' has been successfully {$status}.");
     }
 
     public function destroy(User $user)
