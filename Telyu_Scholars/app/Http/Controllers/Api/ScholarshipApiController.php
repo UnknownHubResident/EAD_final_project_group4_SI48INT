@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Scholarship;
+use Illuminate\Support\Facades\Validator; // REQUIRED IMPORT
+use Illuminate\Support\Facades\Auth;
 
 class ScholarshipApiController extends Controller
 {
@@ -18,7 +20,10 @@ class ScholarshipApiController extends Controller
         }
 
         if ($request->filled('sort_deadline')) {
-            $query->orderBy('deadline', $request->sort_deadline);
+            // Ensure only 'asc' or 'desc' is passed
+            $direction = in_array(strtolower($request->sort_deadline), ['asc', 'desc']) 
+                         ? $request->sort_deadline : 'asc';
+            $query->orderBy('deadline', $direction);
         }
 
         return response()->json([
@@ -29,23 +34,45 @@ class ScholarshipApiController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+       
+        if (!Auth::guard('sanctum')->check()) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        $user = Auth::guard('sanctum')->user();
+    if ($user->role !== 'scholar_provider' && $user->role !== 'admin') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Access denied. Only Scholarship Providers or admins can create scholarships.'
+        ], 403); 
+    }
+
+        $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'amount' => 'required|numeric',
             'deadline' => 'required|date',
             'quota' => 'required|integer',
-            'user_id' => 'required|exists:users,id'
-
         ]);
 
-        $scholarship = Scholarship::create($validated);
+        if ($validator->fails()) {
+          
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+       
+        $scholarship = Scholarship::create(array_merge(
+            $validator->validated(),
+            ['user_id' => Auth::guard('sanctum')->id()] 
+        ));
 
         return response()->json([
             'success' => true,
             'message' => 'Scholarship created successfully',
             'data' => $scholarship
-        ], 201);
+        ], 201); 
     }
-
 }

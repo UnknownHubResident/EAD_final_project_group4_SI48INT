@@ -11,120 +11,107 @@ use Illuminate\Support\Facades\Storage;
 
 class ApplicationController extends Controller
 {
-    /**
-     * Show application form
-     */
-    public function create()
-    {
-        // Prevent duplicate application
-        $existingApplication = Application::where('user_id', Auth::id())->first();
+    // --- STUDENT SIDE ---
+    
+    public function index()
+   {
+    
+    $applications = Application::with('scholarship')
+        ->where('user_id', Auth::id())
+        ->latest()
+        ->paginate(10);
 
-        if ($existingApplication) {
-            return redirect()
-                ->route('application.history')
-                ->withErrors('You have already submitted an application.');
-        }
-
-        $scholarships = Scholarship::all();
-        return view('student.apply', compact('scholarships'));
+ 
+    return view('student.dashboardapplication.index', compact('applications'));
     }
 
-    /**
-     * Store student application
-     */
-    public function store(Request $request)
+    public function create(Scholarship $scholarship)
     {
-        $request->validate([
-            'scholarship_id' => 'required|exists:scholarships,id',
-        ]);
-
-        // Prevent duplicate applications for same scholarship
-        $duplicate = Application::where('user_id', Auth::id())
-            ->where('scholarship_id', $request->scholarship_id)
-            ->exists();
-
-        if ($duplicate) {
-            return redirect()
-                ->back()
-                ->withErrors('You already applied for this scholarship.');
+        
+        if (!$scholarship->is_active) {
+            return redirect()->route('scholarships.index')->with('error', 'Scholarship deactivated.');
         }
 
-        Application::create([
+       
+        $exists = Application::where('user_id', Auth::id())
+    ->where('scholarship_id', $scholarship->id)
+    ->whereIn('status', ['pending', 'approved']) // Only block if not rejected
+    ->exists();
+
+        if ($exists) {
+            return redirect()->back()->with('info', 'You already applied for this.');
+        }
+
+        
+        $user = Auth::user();
+        $defaultData = [
+            'student_number' => $user->student_number ?? '',
+            'study_major' => $user->study_major ?? '',
+            'year_batch' => $user->year_batch ?? '',
+            'degree_rank' => $user->degree_rank ?? '',
+        ];
+
+        return view('student.application.create', compact('scholarship', 'defaultData'));
+    }
+
+    public function store(Request $request, Scholarship $scholarship)
+    {
+        
+        $request->validate([
+            'student_number' => 'required|string',
+            'study_major'    => 'required|string',
+            'year_batch'     => 'required|string',
+            'degree_rank'    => 'required|string',
+            'motivation_letter' => 'required|file|mimes:pdf|max:2048',
+            'transcript'     => 'required|file|mimes:pdf|max:2048',
+            'student_id'     => 'required|file|mimes:jpg,png,pdf|max:1024',
+        ]);
+
+        
+
+        
+        $application = Application::create([
             'user_id' => Auth::id(),
-            'scholarship_id' => $request->scholarship_id,
+            'scholarship_id' => $scholarship->id,
+            'student_number' => $request->student_number,
+            'study_major' => $request->study_major,
+            'year_batch' => $request->year_batch,
+            'degree_rank' => $request->degree_rank,
             'status' => 'pending',
         ]);
 
-        return redirect()
-            ->route('application.history')
-            ->with('success', 'Application submitted successfully!');
+        
+        $filesToUpload = [
+            'motivation_letter' => $request->file('motivation_letter'),
+            'transcript' => $request->file('transcript'),
+            'student_id' => $request->file('student_id'),
+        ];
+
+        foreach ($filesToUpload as $type => $file) {
+            if ($file) {
+                $path = $file->store('documents/' . Auth::id(), 'public');
+                $application->documents()->create([
+                    'file_name' => $file->getClientOriginalName(),
+                    'file_path' => $path,
+                    'file_type' => $type,
+                ]);
+            }
+        }
+
+        return redirect()->route('student.applications.index')->with('success', 'Submitted!');
     }
 
-    /**
-     * View student application history
-     */
-    public function history()
-    {
-        $applications = Application::with('documents', 'scholarship')
-            ->where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+    // --- ADMIN SIDE 
 
-        return view('student.application_history', compact('applications'));
-    }
-
-    /**
-     * Admin: List all applications
-     */
     public function indexAdmin()
     {
-        $applications = Application::with('user', 'scholarship', 'documents')
-            ->orderBy('status')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
+        $applications = Application::with('user', 'scholarship')->paginate(15);
         return view('admin.applications.index', compact('applications'));
     }
 
-    /**
-     * Admin: View single application
-     */
-    public function showAdmin(Application $application)
-    {
-        $application->load('user', 'scholarship', 'documents');
-        return view('admin.applications.show', compact('application'));
-    }
-
-    /**
-     * Admin: Approve application
-     */
     public function approve(Application $application)
     {
-        $application->update([
-            'status' => 'approved',
-        ]);
-
-        return redirect()
-            ->route('admin.applications.index')
-            ->with('success', 'Application approved successfully!');
-    }
-
-    /**
-     * Admin: Reject application
-     */
-    public function reject(Request $request, Application $application)
-    {
-        $request->validate([
-            'remarks' => 'required|string|min:10|max:500',
-        ]);
-
-        $application->update([
-            'status' => 'rejected',
-            'remarks' => $request->remarks,
-        ]);
-
-        return redirect()
-            ->route('admin.applications.index')
-            ->with('success', 'Application rejected successfully!');
+        $application->update(['status' => 'approved']);
+        return redirect()->back()->with('success', 'Approved!');
     }
 }

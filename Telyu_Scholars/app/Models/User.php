@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Scholarship;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +26,12 @@ class User extends Authenticatable
         'password',
         'role',
         'is_approved',
+        'student_number',
+        'study_major',
+        'degree_rank',
+        'year_batch',
+        'is_rejected',
+        'rejection_reason',
     ];
 
     /**
@@ -47,6 +55,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_approved' => 'boolean',
+            'is_rejected' => 'boolean',
             
         ];
     }
@@ -59,6 +68,6 @@ class User extends Authenticatable
 
     public function applications()
     {
-        return $this->hasMany(StudentApplication::class);
+        return $this->hasMany(Application::class);
     }
 }

@@ -14,6 +14,10 @@ class Application extends Model
         'scholarship_id',
         'status',
         'remarks',
+        'student_number',
+        'study_major',
+        'year_batch',
+        'degree_rank',
     ];
 
     public function user()

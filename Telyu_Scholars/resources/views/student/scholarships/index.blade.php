@@ -1,171 +1,109 @@
 @extends('layouts.student')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-6 py-8">
+<div class="max-w-screen-2xl mx-auto px-10 py-12">
+    
+    <h1 class="text-4xl font-extrabold mb-10 text-gray-900 tracking-tight">Scholarship Directory</h1>
 
+    <div class="mb-12">
+        <form method="GET" action="{{ route('student.scholarships.index') }}" class="flex flex-wrap items-center gap-8">
+            <button type="submit" class="bg-[#c5443a] hover:bg-[#a33830] text-white px-8 py-3 rounded-lg text-lg font-bold transition-all shadow-md active:scale-95">
+                Apply Filter
+            </button>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    @foreach($scholarships as $scholarship)
-    <div class="relative bg-white rounded-lg overflow-hidden shadow-md transition-all border {{ !$scholarship->is_active ? 'grayscale opacity-75' : 'hover:shadow-xl' }}">
-        
-        {{-- Inactive Overlay Badge --}}
-        @if(!$scholarship->is_active)
-            <div class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-white bg-opacity-10">
-                <span class="bg-gray-800 text-white px-4 py-2 rounded-full font-bold uppercase tracking-widest text-xs shadow-2xl">
-                    Currently Closed
-                </span>
+            <div class="flex items-center gap-4">
+                <label class="text-lg font-bold text-gray-700">Search</label>
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search scholarship..."
+                    value="{{ request('search') }}"
+                    class="border border-gray-300 rounded-lg px-5 py-3 text-lg w-80 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
             </div>
-        @endif
 
-        {{-- Image Section --}}
-        @if($scholarship->image)
-            <img src="{{ asset('storage/'.$scholarship->image) }}" class="w-full h-48 object-cover">
-        @else
-            <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+            <div class="flex items-center gap-4">
+                <label class="text-lg font-bold text-gray-700">Sort Deadline</label>
+                <select name="sort_deadline" class="border border-gray-300 rounded-lg px-5 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-white">
+                    <option value="">Default</option>
+                    <option value="asc" @selected(request('sort_deadline')==='asc')>Nearest</option>
+                    <option value="desc" @selected(request('sort_deadline')==='desc')>Farthest</option>
+                </select>
             </div>
-        @endif
 
-        <div class="p-6">
-            <h3 class="text-xl font-bold {{ !$scholarship->is_active ? 'text-gray-500' : 'text-indigo-600' }}">
-                {{ $scholarship->title }}
-            </h3>
-            
-            <p class="mt-2 text-gray-600 text-sm line-clamp-2">{{ Str::limit($scholarship->description, 100) }}</p>
-
-            <div class="mt-4 flex flex-col gap-2">
-                <div class="flex justify-between items-center">
-                    <span class="font-bold text-lg text-gray-800">{{ $scholarship->formatted_amount }}</span>
-                    <span class="text-xs text-gray-500 italic">Deadline: {{ $scholarship->deadline->format('d M Y') }}</span>
-                </div>
-                
-                @if($scholarship->is_active)
-                    <a href="{{ route('student.scholarships.show', $scholarship) }}" 
-                       class="w-full text-center bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition font-semibold">
-                        View Details
-                    </a>
-                @else
-                    <button disabled class="w-full bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed font-semibold">
-                        Closed
-                    </button>
-                @endif
+            <div class="flex items-center gap-4">
+                <label class="text-lg font-bold text-gray-700">Filter Major</label>
+                <select name="major" class="border border-gray-300 rounded-lg px-5 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-white">
+                    <option value="">All Majors</option>
+                    @foreach($majors as $major)
+                        <option value="{{ $major->id }}" {{ request('major') == $major->id ? 'selected' : '' }}>
+                            {{ $major->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
-        </div>
+
+            <button type="submit" class="bg-[#c5443a] hover:bg-[#a33830] text-white px-8 py-3 rounded-lg text-lg font-bold transition-all shadow-md active:scale-95">
+                Apply Filter
+            </button>
+        </form>
     </div>
-    @endforeach
-</div>
 
-    <h1 class="text-3xl font-bold mb-6">Scholarship Directory</h1>
-
-    <!-- 🔍 FILTER SECTION -->
-    <form method="GET" class="mb-8 flex flex-wrap gap-4 items-end">
-
-        <div>
-            <label class="text-sm font-medium">Search</label>
-            <input
-                type="text"
-                name="search"
-                placeholder="Search scholarship..."
-                value="{{ request('search') }}"
-                class="border px-4 py-2 rounded w-full md:w-64"
-            >
-        </div>
-
-        <div>
-            <form method="GET" class="mb-4">
-            <label class="text-sm font-medium">Sort Deadline</label>
-            <select name="sort_deadline" class="border px-4 py-2 rounded">
-                <option value="">Default</option>
-                <option value="asc" @selected(request('sort_deadline')==='asc')>
-                    Nearest
-                </option>
-                <option value="desc" @selected(request('sort_deadline')==='desc')>
-                    Farthest
-                </option>
-            </select>
-        </div>
-
-        <div>
-            <label class="text-sm font-medium">Filter Major</label>
-            <select name="major" class="border rounded px-3 py-2">
-            <option value="">All Majors</option>
-            @foreach($majors as $major)
-                <option value="{{ $major->id }}"
-                    {{ request('major') == $major->id ? 'selected' : '' }}>
-                    {{ $major->name }}
-                </option>
-            @endforeach
-        </select>
-        </div>
-
-        <button class="px-6 py-2 bg-red-600 text-white rounded">
-            Apply Filter
-        </button>
-
-    <!-- 📦 SCHOLARSHIP GRID -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
         @forelse($scholarships as $scholarship)
-            <div class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            <div class="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col">
+                
+                <div class="h-64 bg-gray-100 relative">
+                    @if($scholarship->image)
+                        <img src="{{ asset('storage/'.$scholarship->image) }}" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center text-gray-400">
+                            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    @endif
+                </div>
 
-                @if($scholarship->image)
-                    <img src="{{ asset('storage/'.$scholarship->image) }}"
-                         class="w-full h-40 object-cover">
-                @else
-                    <div class="w-full h-40 bg-gray-100 flex items-center justify-center text-gray-400">
-                        No Image
+                <div class="p-8 flex flex-col flex-grow">
+                    <div class="mb-4">
+                        <h2 class="text-2xl font-black text-gray-900 leading-tight">{{ $scholarship->title }}</h2>
+                        <div class="mt-2 text-2xl font-extrabold text-green-600">
+                             {{ $scholarship->formatted_amount }}
+                        </div>
                     </div>
-                @endif
 
-                <div class="p-5 space-y-3">
-                    <h2 class="text-lg font-semibold">
-                        {{ $scholarship->title }}
-                    </h2>
-
-                    <p class="text-sm text-gray-600 line-clamp-2">
+                    <p class="text-lg text-gray-600 line-clamp-3 mb-6 leading-relaxed">
                         {{ $scholarship->description }}
                     </p>
 
-                    <p class="text-xs text-gray-500">
-                        Eligible for:
-                        <span class="font-medium">
-                            {{ $scholarship->majors->pluck('name')->join(', ') ?: 'All Majors' }}
-                        </span>
-                    </p>
-
-                    <p class="text-sm text-red-600 font-medium">
-                        Deadline: {{ $scholarship->deadline->format('d M Y') }}
-                    </p>
+                    <div class="space-y-4 mb-8">
+                        <div>
+                            <p class="text-sm uppercase tracking-widest text-gray-500 font-bold mb-1">Eligible for:</p>
+                            <p class="text-lg font-semibold text-gray-800 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                {{ $scholarship->majors->pluck('name')->join(', ') ?: 'All Majors' }}
+                            </p>
+                        </div>
+                        
+                        <div class="flex items-center text-xl text-red-600 font-black">
+                            <span class="mr-2">📅</span> Deadline: {{ $scholarship->deadline->format('d M Y') }}
+                        </div>
+                    </div>
 
                     <a href="{{ route('student.scholarships.show', $scholarship) }}"
-                       class="inline-block mt-2 bg-red-600 text-white px-4 py-2 rounded text-sm">
+                       class="mt-auto block text-center bg-[#c5443a] text-white px-6 py-4 rounded-xl text-lg font-black hover:bg-[#a33830] transition-colors shadow-lg">
                         View Details
                     </a>
                 </div>
             </div>
         @empty
-            <p class="col-span-3 text-gray-500 text-center">
-                No scholarships found.
-            </p>
+            <div class="col-span-full text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                <p class="text-2xl text-gray-400 font-medium">No scholarships found.</p>
+            </div>
         @endforelse
-
     </div>
 
-    <!-- PAGINATION -->
-    <div class="mt-8">
+    <div class="mt-16 scale-125 origin-center">
         {{ $scholarships->links() }}
     </div>
 
-
-{{-- Pagination Links --}}
-<div class="mt-8">
-    {{ $scholarships->links() }}
 </div>
-
-
 @endsection
-
-
-

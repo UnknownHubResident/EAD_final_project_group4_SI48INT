@@ -11,17 +11,20 @@ return new class extends Migration
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
 
-            // Foreign key to users
+            // 1. Foreign Keys (Who is applying for what?)
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-
-            // Foreign key to scholarships
             $table->foreignId('scholarship_id')->constrained()->onDelete('cascade');
 
-            // Optional remarks by admin
-            $table->text('remarks')->nullable();
-
-            // Status: pending, approved, rejected
-            $table->string('status')->default('pending');
+            // 2. Academic Details (Your fields)
+            $table->string('student_number');
+            $table->string('study_major');
+            $table->string('year_batch');
+            $table->string('degree_rank');
+            
+            // 3. Status & Feedback
+            // We use 'pending' as default so admin can review it.
+            $table->string('status')->default('pending'); 
+            $table->text('remarks')->nullable(); // Replaces 'rejection_reason'
 
             $table->timestamps();
         });

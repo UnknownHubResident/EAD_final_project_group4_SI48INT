@@ -14,10 +14,8 @@
                 <p class="text-gray-600">Email: <strong>{{ $user->email }}</strong></p>
                 <p class="text-gray-600 mb-3">Requested Role: Scholar Provider</p>
                 
-
                 <div class="flex space-x-3 mt-4"> 
-                    
-                    {{-- 1. Approve (POST request, Correct) --}}
+                    {{-- 1. Approve (POST request) --}}
                     <form method="POST" action="{{ route('admin.approve', $user) }}">
                         @csrf
                         <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-bold transition duration-150">
@@ -25,22 +23,11 @@
                         </button>
                     </form>
 
-                    {{-- 2. Reject (GET link to the rejection form, CORRECT) --}}
+                    {{-- 2. Reject (GET link to the rejection form) --}}
                     <a href="{{ route('admin.reject.form', $user) }}" class="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 font-bold transition duration-150 flex items-center">
                         ⛔ Reject Provider
                     </a>
-                    
                 </div>
-                
-
-                {{-- Only the Approve form remains, without the flex wrapper since it's the only button --}}
-                <form method="POST" action="{{ route('admin.approve', $user) }}">
-                    @csrf
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-bold transition duration-150">
-                        ✅ Approve Provider
-                    </button>
-                </form>
-
             </div>
         @endforeach
     </div>

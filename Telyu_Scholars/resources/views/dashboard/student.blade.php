@@ -1,134 +1,98 @@
 @extends('layouts.student')
 
 @section('content')
+<div class="max-w-7xl mx-auto px-6 py-8">
+    {{-- Main Container: Modern UI Box --}}
+    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-8">
+        
+        {{-- 1. Header Section --}}
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-100 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+                    <span class="text-red-600">📚</span> Student Dashboard
+                </h1>
+                <p class="mt-2 text-gray-600">
+                    Welcome back, <span class="font-bold text-gray-900">{{ Auth::user()->name }}</span>!
+                </p>
+            </div>
+            
+            {{-- Status Badge --}}
+            <div class="mt-4 md:mt-0">
+                 <span class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium {{ Auth::user()->is_approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                    Status: {{ Auth::user()->is_approved ? 'Active' : 'Pending' }}
+                </span>
+            </div>
+        </div>
 
-<div class="bg-white p-6 rounded-lg shadow-lg">
-    <h1 class="text-3xl font-bold mb-4 text-blue-600">📚 Student Dashboard</h1>
-
-    {{-- Username is displayed here, as requested --}}
-    <p class="mb-4 text-lg">Welcome, <strong>{{ Auth::user()->name }}</strong>! Your student portal is active.</p>
-    <p class="mb-6 text-gray-600">This page confirms successful routing for a standard user.</p>
-
-    <h2 class="text-xl font-semibold mb-3">Student Menu</h2>
-    <ul class="list-disc list-inside space-y-2 ml-4">
-        {{-- Links use Tailwind classes for a modern look --}}
-        <li>
-            <a href="{{ route('student.scholarships.index') }}" class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
-                View Available Scholarships
-            </a>
-        </li>
-        <li class="text-gray-600"><a href="{{ route('student.applications.index') }}" class="text-blue-600 hover:text-blue-800 hover:underline font-medium">View My Applications (History & Status)</a></li>
-        <li class="text-gray-600">Update Profile (Placeholder)</li>
-    </ul>
-
-    <hr class="my-6">
-
-    <p class="text-sm text-gray-700">
-        Role: <span class="font-semibold text-blue-600">student</span> | Approved: <span class="font-semibold text-green-600">Yes</span>
-    </p>
-
-    <form method="POST" action="{{ route('logout') }}" class="mt-4 inline-block">
-        @csrf
-        <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow">
-            Logout
-        </button>
-    </form>
-
-</div>
-
-{{-- Container Utama dengan Style Card Modern --}}
-<div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mt-6">
-    
-    {{-- Header Section --}}
-    <div class="mb-8 border-b border-gray-100 pb-6 flex justify-between items-end">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
-                <span class="text-red-600">📚</span> Student Dashboard
-            </h1>
-            <p class="mt-2 text-lg text-gray-600">
-                Welcome back, <span class="font-bold text-gray-900">{{ Auth::user()->name ?? 'Student' }}</span>!
+        {{-- 2. System Info Box --}}
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+            <p class="text-sm text-blue-700">
+                <strong>Student Access:</strong> You can browse available scholarships and track your application status in real-time.
             </p>
         </div>
-        {{-- Status Badge --}}
-        <div class="hidden md:block">
-             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ Auth::user()->is_approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                Status: {{ Auth::user()->is_approved ? 'Active' : 'Pending' }}
-            </span>
-        </div>
-    </div>
 
-    {{-- Info Box --}}
-    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-8 rounded-r-lg">
-        <p class="text-sm text-blue-700">
-            <strong>Info:</strong> Your student portal is active and ready to use.
-        </p>
-    </div>
+        {{-- 3. Student Menu (Vertical List Layout) --}}
+        <div>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Quick Actions</h3>
+            
+            {{-- Changed grid-cols-2 to grid-cols-1 for vertical alignment --}}
+            <div class="grid grid-cols-1 gap-4 max-w-2xl">
+                
+                {{-- Action 1: Find Scholarships --}}
+                <a href="{{ route('student.scholarships.index') }}" 
+                   class="group p-5 bg-white border border-gray-200 rounded-xl hover:border-red-500 hover:shadow-md transition-all duration-200 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-red-100 text-red-600 rounded-lg flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900 group-hover:text-red-600 transition-colors">Find Scholarships</h4>
+                        <p class="text-sm text-gray-500">Browse and apply for available funds</p>
+                    </div>
+                </a>
 
-    {{-- Menu Section --}}
-    <h2 class="text-xl font-bold mb-4 text-gray-800">Student Menu</h2>
-    
-    <div class="space-y-3">
-        {{-- Item 1: Active Link --}}
-        <a href="{{ route('student.scholarships.index') }}" 
-           class="group flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl hover:border-red-500 hover:shadow-md transition-all duration-200 cursor-pointer">
-            <div class="flex items-center gap-4">
-                <div class="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                {{-- Action 2: Application View --}}
+                <a href="{{ route('student.applications.index') }}" 
+                   class="group p-5 bg-white border border-gray-200 rounded-xl hover:border-red-500 hover:shadow-md transition-all duration-200 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900 group-hover:text-red-600 transition-colors">Application View</h4>
+                        <p class="text-sm text-gray-500">Track the status of your submissions</p>
+                    </div>
+                </a>
+
+                {{-- Action 3: Profile Settings (Placeholder) --}}
+                <div class="p-5 bg-gray-50 border border-gray-100 rounded-xl opacity-60 cursor-not-allowed flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gray-200 text-gray-500 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-500">Edit Profile</h4>
+                        <p class="text-sm text-gray-400">Update coming soon</p>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="font-semibold text-gray-900 group-hover:text-red-600">View Available Scholarships</h3>
-                    <p class="text-sm text-gray-500">Browse and apply for funding opportunities</p>
-                </div>
+
             </div>
-            <svg class="w-5 h-5 text-gray-400 group-hover:text-red-500 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-        </a>
-
-        {{-- Item 2: Placeholder --}}
-        <div class="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-xl opacity-60 cursor-not-allowed">
-            <div class="flex items-center gap-4">
-                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-gray-500">Submit Application</h3>
-                    <p class="text-sm text-gray-400">Feature coming soon</p>
-                </div>
-            </div>
-            <span class="text-xs font-medium bg-gray-200 text-gray-500 px-2 py-1 rounded">Soon</span>
         </div>
 
-        {{-- Item 3: Placeholder --}}
-        <div class="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-xl opacity-60 cursor-not-allowed">
-            <div class="flex items-center gap-4">
-                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-gray-500">Update Profile</h3>
-                    <p class="text-sm text-gray-400">Feature coming soon</p>
-                </div>
-            </div>
-            <span class="text-xs font-medium bg-gray-200 text-gray-500 px-2 py-1 rounded">Soon</span>
+        {{-- 4. Footer & Logout Section --}}
+        <div class="pt-6 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+            
+            {{-- Role Info --}}
+            <p class="text-sm text-gray-500">
+                Role: <span class="font-mono bg-gray-100 text-gray-700 px-2 py-0.5 rounded uppercase font-bold">{{ Auth::user()->role }}</span>
+            </p>
+
+            {{-- Logout Button --}}
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="flex items-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow font-medium transition duration-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    Logout
+                </button>
+            </form>
         </div>
     </div>
-
-    {{-- Footer Section --}}
-    <div class="mt-8 pt-6 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
-        
-        <p class="text-sm text-gray-500 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-            Role: <span class="font-semibold text-gray-700 uppercase tracking-wide text-xs">{{ Auth::user()->role ?? 'STUDENT' }}</span>
-        </p>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="flex items-center gap-2 px-5 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 font-medium rounded-lg transition duration-200 text-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                Logout
-            </button>
-        </form>
-    </div>
-
 </div>
-
 @endsection
