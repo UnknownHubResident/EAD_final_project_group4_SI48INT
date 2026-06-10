@@ -22,16 +22,16 @@
             @csrf
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
-                <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm">
+                <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
-                <input type="email" name="email" value="{{ old('email') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm">
+                <input type="email" name="email" value="{{ old('email') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
             </div>
 
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Register as a</label>
-                <select name="intended_role" id="intended_role" onchange="toggleStudentFields()" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white">
+                <select name="intended_role" id="intended_role" onchange="toggleStudentFields()" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-red-500">
                     <option value="student" {{ old('intended_role') == 'student' ? 'selected' : '' }}>Student</option>
                     <option value="scholar_provider" {{ old('intended_role') == 'scholar_provider' ? 'selected' : '' }}>Scholar Provider</option>
                 </select>
@@ -41,20 +41,24 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-600 mb-1">Student Number</label>
-                        <input type="text" name="student_number" value="{{ old('student_number') }}" class="w-full rounded-lg border-gray-300 text-sm">
+                        {{-- FIXED: Added "border px-4 py-2" --}}
+                        <input type="text" name="student_number" value="{{ old('student_number') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-600 mb-1">Year Batch</label>
-                        <input type="text" name="year_batch" value="{{ old('year_batch') }}" class="w-full rounded-lg border-gray-300 text-sm">
+                        {{-- FIXED: Added "border px-4 py-2" --}}
+                        <input type="text" name="year_batch" value="{{ old('year_batch') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">Major</label>
-                    <input type="text" name="study_major" value="{{ old('study_major') }}" class="w-full rounded-lg border-gray-300 text-sm">
+                    {{-- FIXED: Added "border px-4 py-2" --}}
+                    <input type="text" name="study_major" value="{{ old('study_major') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">Degree Rank</label>
-                    <select name="degree_rank" class="w-full rounded-lg border-gray-300 text-sm">
+                    {{-- FIXED: Added "border px-4 py-2" and explicit bg-white --}}
+                    <select name="degree_rank" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-red-500">
                         <option value="Bachelor">Bachelor</option>
                         <option value="Master">Master</option>
                         <option value="PhD">PhD</option>
@@ -63,11 +67,11 @@
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-2 border rounded-lg text-sm">
-                <input type="password" name="password_confirmation" placeholder="Confirm" required class="w-full px-4 py-2 border rounded-lg text-sm">
+                <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+                <input type="password" name="password_confirmation" placeholder="Confirm" required class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
             </div>
 
-            <button type="submit" class="w-full bg-[#8B1E24] text-white font-bold py-3 rounded-lg shadow-md mt-4">Register Account</button>
+            <button type="submit" class="w-full bg-[#8B1E24] hover:bg-[#72181C] text-white font-bold py-3 rounded-lg shadow-md mt-4 transition duration-150">Register Account</button>
         </form>
         <p class="mt-8 text-center text-sm text-gray-600 border-t pt-6">Already have an account? <a href="{{ url('/login') }}" class="text-red-600 font-bold hover:underline">Login here</a></p>
     </div>
