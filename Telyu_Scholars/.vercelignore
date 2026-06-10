@@ -1,0 +1,12 @@
+# Ignore local database dumps and documentation
+*.sql
+*.pdf
+*.md
+
+# Ignore local test logs
+.phpunit.cache
+/tests
+
+# Ignore local development environment files
+.env.local
+.env.development
