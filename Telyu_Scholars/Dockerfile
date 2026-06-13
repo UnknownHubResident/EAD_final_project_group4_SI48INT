@@ -36,5 +36,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Step 8: Expose standard web port
 EXPOSE 80
 
-# Step 9: Fire up Laravel's built-in engine bound to Render's dynamic port system
-CMD php artisan serve --host 0.0.0.0 --port=$PORT
+# Step 9: Start the built-in server directly pointing to the public directory
+CMD php -S 0.0.0.0:$PORT -t public
