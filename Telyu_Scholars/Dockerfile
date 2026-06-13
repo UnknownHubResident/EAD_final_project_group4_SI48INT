@@ -1,7 +1,7 @@
 # Step 1: Base image containing PHP and Node extension tools
 FROM php:8.2-fpm-alpine
 
-# Step 2: Install system tools, Node.js (for Tailwind v4 compiling), and MySQL drivers
+# Step 2: Install system tools and MySQL drivers
 RUN apk add --no-cache \
     nginx \
     supervisor \
@@ -10,9 +10,7 @@ RUN apk add --no-cache \
     libxml2-dev \
     libzip-dev \
     zip \
-    unzip \
-    nodejs \
-    npm
+    unzip
 
 RUN docker-php-ext-install pdo_mysql bcmath gd zip
 
@@ -25,10 +23,8 @@ WORKDIR /var/www/html
 # Step 5: Copy your Laravel project into the container
 COPY . .
 
-# Step 6: Install your PHP packages and compile your Tailwind v4 styles via Vite
+# Step 6: Install your PHP packages
 RUN composer install --no-dev --optimize-autoloader
-
-# RUN npm run build
 
 # Step 7: Give the web server permission to read/write Laravel storage folders
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -36,5 +32,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Step 8: Expose standard web port
 EXPOSE 80
 
-# Step 9: Start the built-in server directly pointing to the public directory
-CMD php -S 0.0.0.0:$PORT -t public
+# Step 9: Clear old configurations and start the built-in server
+CMD php artisan config:clear && php artisan cache:clear && php -S 0.0.0.0:$PORT -t public
