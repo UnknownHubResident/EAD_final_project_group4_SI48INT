@@ -27,8 +27,8 @@ COPY . .
 
 # Step 6: Install your PHP packages and compile your Tailwind v4 styles via Vite
 RUN composer install --no-dev --optimize-autoloader
-RUN npm install
-RUN npm run build
+
+# RUN npm run build
 
 # Step 7: Give the web server permission to read/write Laravel storage folders
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
