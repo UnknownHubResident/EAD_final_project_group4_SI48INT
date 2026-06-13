@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL; // Ensure this line is imported!
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Forces Laravel to serve compiled Vite & Tailwind assets over secure HTTPS when live on Render
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
     }
 }
