@@ -32,5 +32,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Step 8: Expose standard web port
 EXPOSE 80
 
-# Step 9: Clear old configurations and start the built-in server
-CMD php artisan config:clear && php artisan cache:clear && php -S 0.0.0.0:$PORT -t public
+# Step 9: Clear old configurations, create the storage symlink, and start the built-in server
+CMD php artisan config:clear && php artisan cache:clear && php artisan storage:link --force && php -S 0.0.0.0:$PORT -t public
