@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            {{-- Eligible Majors (Merged back in) --}}
+            {{-- Eligible Majors --}}
             <div class="pt-4">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Eligible Majors</label>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-gray-50 p-4 rounded-md border border-gray-200">
@@ -86,7 +86,7 @@
                 @if($scholarship->image)
                     <div class="mb-4 flex items-start space-x-4">
                         <div class="relative">
-                            <img src="{{ asset('storage/'.$scholarship->image) }}" class="h-24 w-32 object-cover rounded shadow-sm border border-gray-300">
+                            <img src="{{ asset($scholarship->image) }}" class="h-24 w-32 object-cover rounded shadow-sm border border-gray-300">
                         </div>
                         <div class="flex flex-col space-y-2">
                             <label class="inline-flex items-center cursor-pointer">

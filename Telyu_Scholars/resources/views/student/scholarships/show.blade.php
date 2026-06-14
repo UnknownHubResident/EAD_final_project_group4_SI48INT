@@ -5,7 +5,7 @@
     <div class="bg-white rounded-xl overflow-hidden shadow-lg border border-gray-200">
         @if($scholarship->image)
             <div class="bg-gray-100 flex items-center justify-center border-b">
-                <img src="{{ asset('storage/'.$scholarship->image) }}" class="max-h-[400px] w-auto object-contain">
+                <img src="{{ asset($scholarship->image) }}" class="max-h-[400px] w-auto object-contain">
             </div>
         @endif
 
@@ -13,7 +13,7 @@
             <h1 class="text-4xl font-extrabold text-gray-900">{{ $scholarship->title }}</h1>
             <p class="text-lg text-gray-600 mt-2">Provided by: <span class="font-semibold">{{ $scholarship->provider->name ?? 'N/A' }}</span></p>
 
-           <div class="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-100 inline-block">
+            <div class="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-100 inline-block">
                 <span class="block text-sm font-semibold text-indigo-800 uppercase tracking-wider">Scholarship fund given:</span>
                 <div class="text-3xl font-bold text-indigo-600">
                     {{ $scholarship->formatted_amount }}

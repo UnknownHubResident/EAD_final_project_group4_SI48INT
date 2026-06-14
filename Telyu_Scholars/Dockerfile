@@ -23,7 +23,7 @@ WORKDIR /var/www/html
 # Step 5: Copy your Laravel project into the container
 COPY . .
 
-# Step 6: Install your PHP packages
+# Step 6: Install your PHP packages securely for production
 RUN composer install --no-dev --optimize-autoloader
 
 # Step 7: Give the web server permission to read/write Laravel storage folders
@@ -32,5 +32,11 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Step 8: Expose standard web port
 EXPOSE 80
 
-# Step 9: Clear old configurations, create the storage symlink, and start the built-in server
-CMD php artisan config:clear && php artisan cache:clear && php artisan storage:link --force && php -S 0.0.0.0:$PORT -t public
+# Step 9: Prepare persistent paths, migrate database, cache configuration, and launch server
+CMD mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs && \
+    chown -R www-data:www-data storage bootstrap/cache && \
+    php artisan migrate --force && \
+    php artisan config:cache && \
+    php artisan view:cache && \
+    php artisan storage:link --force && \
+    php -S 0.0.0.0:${PORT:-80} -t public

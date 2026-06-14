@@ -42,7 +42,22 @@ class ProviderScholarshipController extends Controller
         $data['user_id'] = Auth::id();
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('scholarships', 'public');
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            
+            // Define the physical web directory path
+            $destinationPath = public_path('images/scholarships');
+            
+            // Automatically build directories if they don't exist yet
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            
+            // Save the file physically inside public/images/scholarships/
+            $image->move($destinationPath, $imageName);
+            
+            // Store the asset path string to the database
+            $data['image'] = 'images/scholarships/' . $imageName;
         }
 
         $scholarship = Scholarship::create($data);
@@ -75,12 +90,27 @@ class ProviderScholarshipController extends Controller
         $data['is_active'] = $request->has('is_active');
 
         if ($request->hasFile('image')) {
-            if ($scholarship->image) {
-                Storage::disk('public')->delete($scholarship->image);
+            // Delete the old file from the public directory if it exists
+            if ($scholarship->image && file_exists(public_path($scholarship->image))) {
+                unlink(public_path($scholarship->image));
             }
-            $data['image'] = $request->file('image')->store('scholarships', 'public');
+
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $destinationPath = public_path('images/scholarships');
+            
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            
+            $image->move($destinationPath, $imageName);
+            $data['image'] = 'images/scholarships/' . $imageName;
+
         } elseif ($request->boolean('delete_image') && $scholarship->image) {
-            Storage::disk('public')->delete($scholarship->image);
+            // Remove file from disk when explicitly requested
+            if (file_exists(public_path($scholarship->image))) {
+                unlink(public_path($scholarship->image));
+            }
             $data['image'] = null;
         }
 
@@ -100,8 +130,9 @@ class ProviderScholarshipController extends Controller
             abort(403);
         }
 
-        if ($scholarship->image) {
-            Storage::disk('public')->delete($scholarship->image);
+        // Clean up the image file upon model deletion
+        if ($scholarship->image && file_exists(public_path($scholarship->image))) {
+            unlink(public_path($scholarship->image));
         }
 
         $scholarship->delete();

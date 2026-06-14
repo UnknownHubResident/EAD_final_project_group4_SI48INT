@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            
+            {{-- Status Checkbox --}}
             <div class="py-4 border-t border-b border-gray-100 flex items-center justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-gray-700">Accepting Applications</h3>
@@ -60,7 +60,7 @@
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Cover Image</label>
                 @if($scholarship->image)
                     <div class="mb-4 flex items-start space-x-4">
-                        <img src="{{ asset('storage/'.$scholarship->image) }}" class="h-24 w-32 object-cover rounded shadow-sm">
+                        <img src="{{ asset($scholarship->image) }}" class="h-24 w-32 object-cover rounded shadow-sm">
                         <label class="inline-flex items-center mt-2 cursor-pointer">
                             <input type="checkbox" name="delete_image" value="1" class="rounded border-gray-300 text-red-600">
                             <span class="ml-2 text-sm text-red-600 font-medium">Remove current image</span>
