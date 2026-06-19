@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\StudentScholarshipController;
 use App\Http\Controllers\ProviderApplicationController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\MentorController;
+use App\Http\Controllers\BookingController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\ProviderRole;
 use Illuminate\Support\Facades\Auth;
@@ -55,6 +57,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/store/{scholarship}', [ApplicationController::class, 'store'])->name('store');
     });
 
+    // NEW STUDENT MENTORSHIP & BOOKING WEB ROUTING ACTIONS
+    Route::prefix('student/bookings')->name('student.bookings.')->group(function () {
+        Route::get('/', [BookingController::class, 'studentIndex'])->name('index');
+        Route::get('/create', [BookingController::class, 'studentCreate'])->name('create');
+        Route::post('/store', [BookingController::class, 'studentStore'])->name('store');
+    });
+
     // 2. SCHOLARSHIP PROVIDER ROUTES
     Route::middleware([ProviderRole::class])
         ->prefix('provider')
@@ -87,8 +96,6 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/providers/{user}/reject/form', [AdminController::class, 'showRejectForm'])->name('reject.form');
             Route::post('/providers/{user}/reject', [AdminController::class, 'finalizeReject'])->name('reject.finalize');
             
-            // CHANGED: The method name here now matches your Controller (unrejectProvider)
-            // But the route NAME remains 'admin.unreject' so your Blade file still works!
             Route::post('/providers/{user}/unreject', [AdminController::class, 'unrejectProvider'])->name('unreject');
             
             Route::controller(AdminUserController::class)->prefix('users')->name('users.')->group(function () {
@@ -96,6 +103,27 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/{user}', 'show')->name('show');
                 Route::put('/{user}/toggle-status', 'toggleStatus')->name('toggleStatus');
                 Route::delete('/{user}', 'destroy')->name('destroy');
+            });
+
+            // ==========================================
+            // MENTORSHIP & CONSULTATION MODULES
+            // ==========================================
+            Route::prefix('mentors')->name('mentors.')->group(function () {
+                Route::get('/', [MentorController::class, 'index'])->name('index');
+                Route::get('/create', [MentorController::class, 'create'])->name('create');
+                Route::post('/', [MentorController::class, 'store'])->name('store');
+                Route::get('/{id}/edit', [MentorController::class, 'edit'])->name('edit');
+                Route::put('/{id}', [MentorController::class, 'update'])->name('update');
+                Route::delete('/{id}', [MentorController::class, 'destroy'])->name('destroy');
+            });
+
+            Route::prefix('bookings')->name('bookings.')->group(function () {
+                Route::get('/', [BookingController::class, 'index'])->name('index');
+                Route::get('/{id}', [BookingController::class, 'show'])->name('show');
+                Route::post('/{id}/update-status', [BookingController::class, 'updateStatus'])->name('updateStatus');
+                
+                // HERE IS THE ADDED DELETE ROUTE FOR THE ADMIN DISMISSAL ACTION:
+                Route::delete('/{id}', [BookingController::class, 'destroy'])->name('destroy');
             });
         });
 });

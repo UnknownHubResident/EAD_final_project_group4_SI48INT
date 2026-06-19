@@ -15,7 +15,7 @@
             <div class="flex justify-between h-16">
                 {{-- Logo Side --}}
                 <div class="flex items-center">
-                    <a href="{{ route('student.scholarships.index') }}" class="flex items-center gap-2 text-white">
+                    <a href="{{ route('student.dashboard') }}" class="flex items-center gap-2 text-white">
                         <span class="text-2xl">🎓</span>
                         <span class="font-black text-xl tracking-tighter uppercase">Student Panel</span>
                     </a>
@@ -27,7 +27,7 @@
                     @auth
                         {{-- Show this only if user IS logged in --}}
                         <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="flex items-center gap-2 text-white hover:bg-[#a12323] px-4 py-2 rounded-lg transition-colors font-bold">
+                            <button @click="open = !open" class="flex items-center gap-2 text-white hover:bg-[#a12323] px-4 py-2 rounded-lg transition-colors font-bold focus:outline-none">
                                 {{ Auth::user()->name }}
                                 <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -36,18 +36,28 @@
 
                             {{-- Dropdown Menu --}}
                             <div x-show="open" @click.away="open = false" 
-                                 class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 text-gray-800">
+                                 class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 py-2 text-gray-800 z-50">
                                 
-                                <a href="{{ route('student.dashboard') }}" class="block px-4 py-3 hover:bg-gray-50 flex items-center gap-3">
-                                    <span class="text-lg"></span> Dashboard
+                                <a href="{{ route('student.dashboard') }}" class="block px-4 py-3 hover:bg-gray-50 flex items-center gap-3 font-medium">
+                                    <span>🏠</span> Dashboard
                                 </a>
 
                                 <a href="{{ route('student.scholarships.index') }}" class="block px-4 py-3 hover:bg-gray-50 flex items-center gap-3 font-medium text-gray-700">
-                                    <span class="text-lg"></span> Find Scholarships
+                                    <span>🔍</span> Find Scholarships
                                 </a>
 
                                 <a href="{{ route('student.applications.index') }}" class="block px-4 py-3 hover:bg-gray-50 flex items-center gap-3 font-medium text-gray-700">
-                                    <span class="text-lg"></span> Application View
+                                    <span>📂</span> Application View
+                                </a>
+
+                                <div class="border-t border-gray-100 my-1"></div>
+
+                                <a href="{{ route('student.bookings.create') }}" class="block px-4 py-3 hover:bg-gray-50 flex items-center gap-3 font-semibold text-green-700">
+                                    <span>🤝</span> Book Consultation
+                                </a>
+
+                                <a href="{{ route('student.bookings.index') }}" class="block px-4 py-3 hover:bg-gray-50 flex items-center gap-3 font-semibold text-yellow-600">
+                                    <span>📋</span> Consultation Logs
                                 </a>
 
                                 <div class="border-t border-gray-100 my-1"></div>

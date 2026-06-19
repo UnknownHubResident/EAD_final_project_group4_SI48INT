@@ -20,54 +20,74 @@
             Admin Panel
         </a>
 
+        {{-- SINGLE UNIFIED DROPDOWN ANCHOR --}}
         <div class="relative">
-            <button
-                type="button"
-                onclick="document.getElementById('admin-menu').classList.toggle('hidden')"
-                class="inline-flex items-center px-4 py-2 text-sm font-medium hover:bg-red-700 rounded"
+            <button 
+                type="button" 
+                onclick="toggleAdminMenu()" 
+                class="inline-flex items-center px-4 py-2 font-semibold text-sm hover:bg-red-800 rounded focus:outline-none transition"
             >
-                Admin Tasks
-                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor"
-                     viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
+                <span class="mr-1">{{ Auth::user()->name ?? 'test user1' }}</span>
+                <span id="menu-arrow">∨</span>
             </button>
 
-            {{-- DROPDOWN --}}
+            {{-- DROPDOWN MENU PANEL --}}
             <div
                 id="admin-menu"
-                class="hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-30 pointer-events-auto"
+                class="hidden absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-30 pointer-events-auto border border-gray-100"
             >
-                <a href="{{ route('dashboard') }}"
-                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Dashboard
-                </a>
+                <div class="py-1">
+                    <a href="{{ route('dashboard') }}"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium">
+                        Dashboard
+                    </a>
 
-                <a href="{{ route('admin.scholarships.index') }}"
-                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Manage Scholarships
-                </a>
+                    <hr class="border-gray-200">
 
-                <a href="{{ route('admin.users.index') }}"
-                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Manage Users
-                </a>
+                    <a href="#"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Pending Provider Applications
+                    </a>
 
-                <a href="{{ route('admin.pending') }}"
-                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Pending Providers
-                </a>
+                    <a href="{{ route('admin.scholarships.index') }}"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Manage Scholarships
+                    </a>
 
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button
-                        type="submit"
-                        class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                    >
-                        Logout
-                    </button>
-                </form>
+                    <a href="{{ route('admin.users.index') }}"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Manage Users
+                    </a>
+
+                    <a href="{{ route('admin.pending') }}"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Pending Providers
+                    </a>
+
+                    <hr class="border-gray-200">
+
+                    <a href="{{ route('admin.mentors.index') }}"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-semibold text-green-700">
+                        Manage All Mentors
+                    </a>
+
+                    <a href="{{ route('admin.bookings.index') }}"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-semibold text-yellow-600">
+                        Pending Consultations Booking
+                    </a>
+
+                    <hr class="border-gray-200">
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-bold"
+                        >
+                            ← Log out
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -87,6 +107,31 @@
 
     </div>
 </main>
+
+<script>
+    function toggleAdminMenu() {
+        const menu = document.getElementById('admin-menu');
+        const arrow = document.getElementById('menu-arrow');
+        
+        if (menu.classList.contains('hidden')) {
+            menu.classList.remove('hidden');
+            arrow.textContent = '▲';
+        } else {
+            menu.classList.add('hidden');
+            arrow.textContent = '∨';
+        }
+    }
+
+    // Close dropdown dynamically when clicking canvas space away from button
+    window.addEventListener('click', function(e) {
+        const menu = document.getElementById('admin-menu');
+        const arrow = document.getElementById('menu-arrow');
+        if (!e.target.closest('.relative')) {
+            menu.classList.add('hidden');
+            arrow.textContent = '∨';
+        }
+    });
+</script>
 
 </body>
 </html>

@@ -27,15 +27,14 @@
         {{-- 2. System Info Box --}}
         <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
             <p class="text-sm text-blue-700">
-                <strong>Student Access:</strong> You can browse available scholarships and track your application status in real-time.
+                <strong>Student Access:</strong> You can browse available scholarships, register sessions with specialized expert academic mentors, and track validation pipelines live.
             </p>
         </div>
 
-        {{-- 3. Student Menu (Vertical List Layout) --}}
+        {{-- 3. Student Menu (Vertical List Layout Match Figma Grid) --}}
         <div>
             <h3 class="text-xl font-bold text-gray-900 mb-4">Quick Actions</h3>
             
-            {{-- Changed grid-cols-2 to grid-cols-1 for vertical alignment --}}
             <div class="grid grid-cols-1 gap-4 max-w-2xl">
                 
                 {{-- Action 1: Find Scholarships --}}
@@ -57,34 +56,44 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-900 group-hover:text-red-600 transition-colors">Application View</h4>
+                        <h4 class="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Application View</h4>
                         <p class="text-sm text-gray-500">Track the status of your submissions</p>
                     </div>
                 </a>
 
-                {{-- Action 3: Profile Settings (Placeholder) --}}
-                <div class="p-5 bg-gray-50 border border-gray-100 rounded-xl opacity-60 cursor-not-allowed flex items-center gap-4">
-                    <div class="w-12 h-12 bg-gray-200 text-gray-500 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                {{-- NEW Action 3: Book Consultation (From Figma Design) --}}
+                <a href="{{ route('student.bookings.create') }}" 
+                   class="group p-5 bg-white border border-gray-200 rounded-xl hover:border-green-500 hover:shadow-md transition-all duration-200 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-lg flex items-center justify-center group-hover:bg-green-600 group-hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-500">Edit Profile</h4>
-                        <p class="text-sm text-gray-400">Update coming soon</p>
+                        <h4 class="font-bold text-gray-900 group-hover:text-green-600 transition-colors">Book Consultation Session</h4>
+                        <p class="text-sm text-gray-500">Connect with expert student mentors live</p>
                     </div>
-                </div>
+                </a>
+
+                {{-- NEW Action 4: Consultation Logs (From Figma Design) --}}
+                <a href="{{ route('student.bookings.index') }}" 
+                   class="group p-5 bg-white border border-gray-200 rounded-xl hover:border-yellow-500 hover:shadow-md transition-all duration-200 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-lg flex items-center justify-center group-hover:bg-yellow-600 group-hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 002-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900 group-hover:text-yellow-600 transition-colors">Consultation Pending & Logs</h4>
+                        <p class="text-sm text-gray-500">Review schedule confirmations and meeting platforms</p>
+                    </div>
+                </a>
 
             </div>
         </div>
 
         {{-- 4. Footer & Logout Section --}}
         <div class="pt-6 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
-            
-            {{-- Role Info --}}
             <p class="text-sm text-gray-500">
                 Role: <span class="font-mono bg-gray-100 text-gray-700 px-2 py-0.5 rounded uppercase font-bold">{{ Auth::user()->role }}</span>
             </p>
 
-            {{-- Logout Button --}}
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="flex items-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow font-medium transition duration-200">
